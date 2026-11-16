@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>University of Calicut – Remuneration Bill</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      background: #d9d9d9;
+      padding: 15px;
+      font-size: 12px;
+      color: #000;
+    }
+
+    /* Toolbar / Controls */
+    .toolbar {
+      max-width: 210mm;
+      margin: 0 auto 12px;
+      background: #1a365d;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 12.5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .toolbar-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .toolbar label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.12);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .toolbar input[type="number"] {
+      width: 55px;
+      padding: 3px 5px;
+      border-radius: 3px;
+      border: none;
+      font-weight: bold;
+      text-align: center;
+    }
+    .btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .btn-print { background: #ecc94b; color: #1a202c; }
+    .btn-save  { background: #3182ce; }
+    .btn-load  { background: #38a169; }
+    .btn-clear { background: #e53e3e; }
+
+    /* A4 Page Layout */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 18px;
+      background: #fff;
+      padding: 10mm 12mm;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+      position: relative;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .sub-header {
+      text-align: center;
+      font-size: 11.5px;
+      font-weight: bold;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+    .exam-input {
+      border: none;
+      border-bottom: 1px dotted #000;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: bold;
+      text-align: center;
+      width: 440px;
+      text-transform: uppercase;
+      padding: 0 4px;
+      background: transparent;
+    }
+
+    /* Tables */
+    table.form-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 6px;
+      font-size: 11px;
+    }
+    table.form-table td, table.form-table th {
+      border: 1px solid #000;
+      padding: 3px 5px;
+      vertical-align: middle;
+    }
+    .sl-col {
+      width: 28px;
+      text-align: center;
+      font-weight: normal;
+      vertical-align: top !important;
+    }
+
+    input[type="text"], input[type="number"], textarea {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 12px;
+      color: #000;
+      padding: 1px 2px;
+      outline: none;
+    }
+    input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+      background: #fefcbf;
+    }
+    textarea {
+      resize: none;
+      line-height: 1.25;
+    }
+    .bold-upper {
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .sec-title {
+      font-size: 11px;
+      font-weight: bold;
+      margin: 6px 0 3px;
+    }
+
+    /* Strike-off diagonal slash for Sections 11 & 13 */
+    .strike-wrap {
+      position: relative;
+    }
+    .strike-wrap.struck::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom right, transparent calc(50% - 1px), #000 50%, transparent calc(50% + 1px));
+      pointer-events: none;
+    }
+
+    table.grid-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+    }
+    table.grid-table th, table.grid-table td {
+      border: 1px solid #000;
+      padding: 3px 4px;
+      text-align: center;
+    }
+    table.grid-table th {
+      font-weight: normal;
+      line-height: 1.2;
+    }
+    table.grid-table input {
+      text-align: center;
+      font-weight: bold;
+    }
+    table.grid-table input.left {
+      text-align: left;
+    }
+
+    .words-row {
+      border: 1px solid #000;
+      border-top: none;
+      padding: 4px 6px;
+      font-size: 11px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .words-row input {
+      flex: 1;
+      border-bottom: 1px dotted #000;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .grand-row {
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: bold;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .grand-row input {
+      width: 150px;
+      border-bottom: 1px dotted #000;
+      font-size: 13px;
+      font-weight: bold;
+    }
+    .footer-note {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10.5px;
+      font-weight: bold;
+      font-style: italic;
+      margin-top: 4px;
+    }
+
+    /* Page 2 Specific Styles */
+    .sig-box-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+    }
+    .sig-box-table td {
+      border: 1px solid #000;
+      width: 25%;
+      height: 68px;
+      vertical-align: bottom;
+      text-align: center;
+      padding: 4px;
+      font-size: 10.5px;
+    }
+    .sig-box-table input {
+      text-align: center;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+      border-bottom: 1px dotted #888;
+    }
+
+    .cert-section {
+      margin-top: 12px;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .cert-section h3 {
+      text-align: center;
+      font-size: 12px;
+      text-decoration: underline;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .cert-section p {
+      text-indent: 30px;
+      text-align: justify;
+      margin-bottom: 10px;
+    }
+    .cert-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 10px;
+    }
+    .stamp-box {
+      border: 1px solid #000;
+      width: 95px;
+      height: 60px;
+      padding: 4px;
+      font-size: 8.5px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.2;
+    }
+
+    .office-box {
+      border: 1px solid #000;
+      margin-top: 12px;
+      font-size: 10.5px;
+    }
+    .office-title {
+      text-align: center;
+      font-weight: bold;
+      text-decoration: underline;
+      padding: 5px;
+      font-size: 11px;
+    }
+    .office-content {
+      padding: 6px 10px;
+      line-height: 1.8;
+    }
+    .dotted-inline {
+      border-bottom: 1px dotted #000 !important;
+      display: inline-block;
+      width: 80px !important;
+      text-align: center;
+    }
+
+    .audit-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 10.5px;
+    }
+    .audit-table td {
+      border: 1px solid #000;
+      width: 50%;
+      padding: 6px 8px;
+      vertical-align: top;
+      line-height: 1.6;
+    }
+    .audit-head {
+      text-align: center;
+      font-weight: bold;
+      text-decoration: underline;
+      margin-bottom: 6px;
+    }
+    .officer-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 18px;
+      font-weight: bold;
+    }
+
+    .inst-section {
+      margin-top: 12px;
+      font-size: 9.8px;
+      line-height: 1.38;
+    }
+    .inst-section h4 {
+      text-align: center;
+      font-size: 10.5px;
+      text-decoration: underline;
+      margin: 8px 0 4px;
+    }
+    .inst-section ol {
+      padding-left: 18px;
+    }
+    .inst-section li {
+      margin-bottom: 2px;
+      text-align: justify;
+    }
+
+    .dev-footer {
+      max-width: 210mm;
+      margin: 0 auto 20px;
+      text-align: center;
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      color: #444;
+    }
+
+    @media print {
+      @page { size: A4 portrait; margin: 0; }
+      body { background: #fff; padding: 0; }
+      .toolbar, .dev-footer { display: none !important; }
+      .page {
+        box-shadow: none;
+        margin: 0;
+        width: 210mm;
+        height: 297mm;
+        padding: 9mm 11mm;
+        page-break-after: always;
+      }
+      .page:last-of-type { page-break-after: auto; }
+      input, textarea { background: transparent !important; }
+      .sig-box-table input { border-bottom: none !important; }
+      .strike-wrap.struck::after {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ==================== TOP CONTROL BAR ==================== -->
+<div class="toolbar">
+  <div class="toolbar-group">
+    <label>
+      Rate/Script (₹):
+      <input type="number" id="rate_per_script" value="20" oninput="calcAll()" />
+    </label>
+    <label>
+      <input type="checkbox" id="strike_11" checked onchange="toggleStrike()" />
+      Strike-off Sec 11 (QP)
+    </label>
+    <label>
+      <input type="checkbox" id="strike_13" checked onchange="toggleStrike()" />
+      Strike-off Sec 13 (Practical)
+    </label>
+  </div>
+  <div class="toolbar-group">
+    <button class="btn btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
+    <button class="btn btn-save" onclick="saveDraft()">💾 Save</button>
+    <button class="btn btn-load" onclick="loadDraft()">📂 Load</button>
+    <button class="btn btn-clear" onclick="clearAll()">🗑️ Clear</button>
+  </div>
+</div>
+
+<!-- ==================== PAGE 1 ==================== -->
+<div class="page">
+  <h1>UNIVERSITY OF CALICUT</h1>
+  <div class="sub-header">
+    REMUNERATION BILL for Setting of Question papers, Valuation of answer papers of<br>
+    Theory/Practical Examinations, Revaluation/Picking out and Despatching of answer papers<br>
+    of <input type="text" id="exam_name" class="exam-input" value="THIRD SEMESTER FYUG EXAMINATION NOVEMBER 2025" /> Examinations.
+  </div>
+
+  <!-- Personal & Bank Details Table (1 to 10) -->
+  <table class="form-table">
+    <tr>
+      <td class="sl-col">1 a.</td>
+      <td style="width:44%">Name of QP Setter/Examiner/Chief/Chairperson <em>(in block letters)</em></td>
+      <td style="width:50%">
+        <input type="text" id="name" class="bold-upper" placeholder="ENTER NAME IN BLOCK LETTERS" oninput="syncName()" />
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">b.</td>
+      <td>Calicut University Teacher Unique ID No.</td>
+      <td>
+        <input type="text" id="teacher_id" class="bold-upper" placeholder="e.g. TCM150837" />
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">2 a.</td>
+      <td>
+        Designation &amp; Basic Pay :
+        <input type="text" id="designation" class="bold-upper" value="ASSISTANT PROFESSOR" style="width:55%; display:inline-block" />
+      </td>
+      <td>
+        <strong>b.</strong> Tick whether Govt./Aided/Self Financing :
+        <div style="margin-top:2px; font-size:10.5px">
+          <label style="margin-right:8px"><input type="checkbox" id="col_govt" /> Govt.</label>
+          <label style="margin-right:8px"><input type="checkbox" id="col_aided" /> Aided</label>
+          <label><input type="checkbox" id="col_sf" checked /> Self Financing</label>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">3</td>
+      <td style="vertical-align:top">
+        <div style="display:flex; gap:6px">
+          <span style="white-space:nowrap">Office address :<br><em>(in block<br>letters)</em></span>
+          <textarea id="office_address" rows="3" class="bold-upper">MIC ARTS AND SCIENCE COLLEGE, ATHANIKKAL</textarea>
+        </div>
+      </td>
+      <td style="vertical-align:top">
+        <div style="display:flex; gap:6px">
+          <span style="white-space:nowrap">Home :<br><em>(in block<br>letters)</em></span>
+          <textarea id="home_address" rows="3" class="bold-upper" placeholder="ENTER HOME ADDRESS"></textarea>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">4</td>
+      <td>
+        Permanent Account Number (PAN) :
+        <input type="text" id="pan" class="bold-upper" style="width:46%; display:inline-block" />
+      </td>
+      <td>
+        <strong>5</strong> Mobile Number :
+        <input type="text" id="mobile" class="bold-upper" style="width:62%; display:inline-block" />
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">6</td>
+      <td>
+        E-mail ID :
+        <input type="text" id="email" style="width:76%; display:inline-block; font-weight:bold" />
+      </td>
+      <td>
+        <strong>7</strong> Bank A/C Number :
+        <input type="text" id="bank_ac" class="bold-upper" style="width:58%; display:inline-block" />
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">8</td>
+      <td>
+        Name of the Bank and Branch :
+        <input type="text" id="bank_branch" class="bold-upper" style="width:48%; display:inline-block" />
+      </td>
+      <td>
+        <strong>9</strong> IFS Code :
+        <input type="text" id="ifsc" class="bold-upper" style="width:68%; display:inline-block" />
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">10</td>
+      <td>
+        Name of the disbursing Officer (Treasury Officer in the case of Govt. College Teachers, Principal in the case of Aided College Teachers).
+      </td>
+      <td>
+        <input type="text" id="disbursing_officer" class="bold-upper" />
+      </td>
+    </tr>
+  </table>
+
+  <!-- Section 11: Setting Question Papers -->
+  <div class="sec-title">* 11 For setting question papers</div>
+  <div id="sec11_wrap" class="strike-wrap struck">
+    <table class="grid-table">
+      <tr>
+        <th rowspan="2" style="width:20%">Name of the<br>Programme</th>
+        <th rowspan="2" style="width:30%">Details of Courses and<br>question papers</th>
+        <th rowspan="2" style="width:11%">No. of QP<br>set</th>
+        <th rowspan="2" style="width:13%">No. of<br>answer keys</th>
+        <th colspan="2">Remuneration (Rs.)</th>
+      </tr>
+      <tr>
+        <th style="width:13%">For QPs</th>
+        <th style="width:13%">For Keys</th>
+      </tr>
+      <tr>
+        <td style="height:26px"><input type="text" id="qp_prog" class="left" /></td>
+        <td><input type="text" id="qp_details" class="left" /></td>
+        <td><input type="text" id="qp_set" /></td>
+        <td><input type="text" id="qp_keys" /></td>
+        <td><input type="number" id="qp_rem_qp" oninput="calcAll()" /></td>
+        <td><input type="number" id="qp_rem_key" oninput="calcAll()" /></td>
+      </tr>
+      <tr>
+        <td colspan="2" style="border-bottom:none"></td>
+        <td colspan="2" style="font-weight:bold">Total</td>
+        <td colspan="2"><input type="text" id="qp_total" readonly /></td>
+      </tr>
+    </table>
+    <div class="words-row">
+      <span>Rs. (in words)</span>
+      <input type="text" id="qp_words" />
+    </div>
+  </div>
+
+  <!-- Section 12: Valuation -->
+  <div class="sec-title">* 12 For Valuation / Revaluation / Picking out / Despatching of answer scripts</div>
+  <table class="grid-table">
+    <tr>
+      <th rowspan="2" style="width:20%">Name of the<br>Programme/<br>Examination/Paper</th>
+      <th colspan="2">False No. of<br>answer scripts</th>
+      <th rowspan="2" style="width:20%">Duration of Paper<br>with question<br>paper code</th>
+      <th rowspan="2" style="width:16%">No. of Answer<br>scripts valued<br>(a)</th>
+      <th rowspan="2" style="width:18%">Mandatory minimum<br>No. of answer scripts<br>(b)</th>
+    </tr>
+    <tr>
+      <th style="width:13%">From</th>
+      <th style="width:13%">To</th>
+    </tr>
+    <tr>
+      <td style="height:36px"><textarea id="val_paper" rows="2" class="bold-upper" style="text-align:center"></textarea></td>
+      <td><textarea id="val_from" rows="2" class="bold-upper" style="text-align:center"></textarea></td>
+      <td><textarea id="val_to" rows="2" class="bold-upper" style="text-align:center"></textarea></td>
+      <td><textarea id="val_qpcode" rows="2" class="bold-upper" style="text-align:center"></textarea></td>
+      <td><input type="number" id="val_a" min="0" oninput="calcAll()" style="font-size:13px" /></td>
+      <td><input type="number" id="val_b" min="0" oninput="calcAll()" style="font-size:13px" /></td>
+    </tr>
+  </table>
+
+  <table class="grid-table" style="margin-top:5px">
+    <tr>
+      <th style="width:20%">Remuneration for<br>(a-b)<br>(P)</th>
+      <th style="width:19%">Remuneration for<br>Discussion<br>(Q)</th>
+      <th style="width:21%">Remuneration for<br>handling of answer<br>scripts<br>(R)</th>
+      <th style="width:21%">No. of answer<br>scripts revalued/<br>picked/despatched<br>(S)</th>
+      <th style="width:19%">Remuneration<br>for 'S'<br>(T)</th>
+    </tr>
+    <tr>
+      <td style="height:28px"><input type="text" id="val_p" oninput="calcManualP()" placeholder="e.g. 56x20=1120" /></td>
+      <td><input type="number" id="val_q" oninput="calcAll()" /></td>
+      <td><input type="number" id="val_r" oninput="calcAll()" /></td>
+      <td><input type="text" id="val_s" /></td>
+      <td><input type="number" id="val_t" oninput="calcAll()" /></td>
+    </tr>
+    <tr>
+      <td colspan="3" style="text-align:left; padding:4px 6px">
+        Total (P+Q+R) Rs.
+        <input type="text" id="val_total_pqr" style="width:120px; display:inline-block; border-bottom:1px dotted #000" />
+      </td>
+      <td colspan="2" style="text-align:left; padding:4px 6px">
+        Amount (T) Rs.
+        <input type="text" id="val_total_t" style="width:90px; display:inline-block; border-bottom:1px dotted #000" />
+      </td>
+    </tr>
+  </table>
+  <div class="words-row">
+    <span>Total Rupees (in words)</span>
+    <input type="text" id="val_words" />
+  </div>
+
+  <!-- Section 13: Practical / Viva -->
+  <div class="sec-title">
+    * 13 For Practical/Viva Examinations of
+    <input type="text" id="prac_exam" style="width:260px; display:inline-block; border-bottom:1px dotted #000" />
+  </div>
+  <div id="sec13_wrap" class="strike-wrap struck">
+    <table class="grid-table">
+      <tr>
+        <th rowspan="2" style="width:14%">No. of Batches<br>(prescribing<br>work)</th>
+        <th colspan="2">No. of Candidates</th>
+        <th colspan="5">Remuneration for</th>
+      </tr>
+      <tr>
+        <th style="width:10%">Registered</th>
+        <th style="width:10%">Present</th>
+        <th style="width:12%">Prescribing<br>work (P)</th>
+        <th style="width:12%">Preparing<br>work (Q)</th>
+        <th style="width:12%">Conducting<br>work (R)</th>
+        <th style="width:17%">Remuneration for<br>valuation of practicals<br>if any (S)</th>
+        <th style="width:13%">Conduct of<br>Viva if any<br>(T)</th>
+      </tr>
+      <tr>
+        <td style="height:26px"><input type="text" id="prac_batch" /></td>
+        <td><input type="text" id="prac_reg" /></td>
+        <td><input type="text" id="prac_pres" /></td>
+        <td><input type="number" id="prac_p" oninput="calcAll()" /></td>
+        <td><input type="number" id="prac_q" oninput="calcAll()" /></td>
+        <td><input type="number" id="prac_r" oninput="calcAll()" /></td>
+        <td><input type="number" id="prac_s" oninput="calcAll()" /></td>
+        <td><input type="number" id="prac_t" oninput="calcAll()" /></td>
+      </tr>
+      <tr>
+        <td colspan="3"></td>
+        <td colspan="3" style="font-weight:bold">Total (P+Q+R+S+T)</td>
+        <td colspan="2" style="text-align:left">
+          Rs. <input type="text" id="prac_total" style="width:80%; display:inline-block" readonly />
+        </td>
+      </tr>
+    </table>
+    <div class="words-row">
+      <span>Rupees (in words)</span>
+      <input type="text" id="prac_words" />
+    </div>
+  </div>
+
+  <!-- Grand Total & Footer -->
+  <div class="grand-row">
+    <span>Grand Total of Theory &amp; Practical Rs.</span>
+    <input type="text" id="grand_total" />
+  </div>
+  <div class="footer-note">
+    <span>* Strike off whichever is not applicable</span>
+    <span>P.T.O</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 2 ==================== -->
+<div class="page">
+  <div class="sec-title">14 &nbsp;&nbsp; Name &amp; Signature of :</div>
+  <table class="sig-box-table">
+    <tr>
+      <td>
+        <input type="text" id="sig_chair" placeholder="Name (optional)" />
+        <div>Chairperson</div>
+      </td>
+      <td>
+        <input type="text" id="sig_chief" placeholder="Name (optional)" />
+        <div>Chief Examiner</div>
+      </td>
+      <td>
+        <input type="text" id="sig_add" placeholder="Name (optional)" />
+        <div>Additional Examiner</div>
+      </td>
+      <td>
+        <input type="text" id="sig_qp" placeholder="Name (optional)" />
+        <div>QP Setter</div>
+      </td>
+    </tr>
+  </table>
+
+  <div class="cert-section">
+    <h3>CERTIFICATE</h3>
+    <p>
+      Certified that the amount in this bill has not been claimed previously and it is paid to me provisionally and I shall
+      refund to the University any amount received which is subsequently disallowed by audit.
+    </p>
+    <div class="cert-bottom">
+      <div style="width:25%; padding-bottom:4px">Contents received</div>
+      <div style="width:52%; text-align:center">
+        <input type="text" id="cert_name_sign" class="bold-upper" style="text-align:center; margin-bottom:18px" />
+        <div style="font-size:10.5px">Signature of the Examiner/Chief/Chairperson/QP Setter with date</div>
+      </div>
+      <div class="stamp-box">
+        Affix Revenue<br>Stamp for<br>Claims<br>exceeding<br>Rs. 5000/-
+      </div>
+    </div>
+  </div>
+
+  <!-- For Office Use Only -->
+  <div class="office-box">
+    <div class="office-title">FOR OFFICE USE ONLY (Pareeksha Bhavan)</div>
+    <div class="office-content">
+      <div>
+        1. Received <input type="text" class="dotted-inline" /> QPs /
+        <input type="text" class="dotted-inline" /> Answer Keys / Mark sheets of
+        <input type="text" class="dotted-inline" style="width:110px !important" /> Answerscripts
+      </div>
+      <div>
+        2. No. of Answerscripts revalued / picked / despatched
+        <input type="text" class="dotted-inline" style="width:260px !important" />
+      </div>
+      <div style="margin-left:42%; margin-top:6px; line-height:1.6">
+        <div>Signature of SO/AR/JCE with date :</div>
+        <div style="margin-left:32%">Designation :</div>
+      </div>
+    </div>
+
+    <table class="audit-table">
+      <tr>
+        <td>
+          <div class="audit-head">Pre-audit / Payment by Finance Branch</div>
+          <div>Rs. <input type="text" class="dotted-inline" style="width:85% !important" /></div>
+          <div>(Rupees <input type="text" class="dotted-inline" style="width:78% !important" /></div>
+          <div><input type="text" class="dotted-inline" style="width:88% !important" /> only)</div>
+          <div style="margin-top:4px">found admissible and passed for payment / paid.</div>
+          <div class="officer-row">
+            <span>Asst.</span>
+            <span>S.O.</span>
+            <span>AR/DR/JR/FO</span>
+          </div>
+        </td>
+        <td>
+          <div class="audit-head">Payment by Pareeksha Bhavan to QP Setters</div>
+          <div style="margin-top:8px">Paid the amount passed for payment</div>
+          <div style="height:64px"></div>
+          <div class="officer-row">
+            <span>Asst.</span>
+            <span>S.O.</span>
+            <span>AR/DR/JR/FO</span>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Official Instructions -->
+  <div class="inst-section">
+    <h4>Important instructions to Examiners / Chief / Chairpersons / QP Setters</h4>
+    <ol>
+      <li>The teachers drawing UGC scale of pay shall value the mandatory number of answerscripts as part of duty without any remuneration.</li>
+      <li>The examiners are not eligible for reimbursement of any expenses with respect to the picking out and despatching of answerscripts over and above the remuneration fixed.</li>
+      <li>Examiners are eligible for TA/DA for attending CV Camps as per rules.</li>
+      <li>Revenue stamp is to be affixed in the bill when the total amount exceeds Rs. 5000/-</li>
+      <li>The remuneration will be sanctioned by the University and credited directly to the Bank Account mentioned in the bill.</li>
+      <li>The Payment of remuneration by this office is an income for the purpose of income tax. This may be included in the taxable income while computing annual income during the financial year.</li>
+      <li>For further details Examiners are requested to refer the University Orders issued from time to time.</li>
+    </ol>
+
+    <h4>Additional instructions to QP Setters</h4>
+    <ol>
+      <li>The Chairman of Board of QP Setters may claim 'Chairman's Fee', Postage and Stationery charges (enclosing signed vouchers), etc., in his bill.</li>
+      <li>All Question paper setters should forward their remuneration bills to the Controller of Examinations through the Chairperson, as soon as the QP setting work is over.</li>
+      <li>All remuneration bills must bear the signature of the Chairperson. If there is no separate Chairperson, the fact may be noted in the space provided for the signature of the Chairperson.</li>
+      <li>The Chairperson must forward all the remuneration bills of the QP setting Board in one lot within one month positively.</li>
+    </ol>
+    <div style="margin-top:10px; font-size:8.5px">CUP 740/18/50,000</div>
+  </div>
+</div>
+
+<div class="dev-footer">
+  Developed by Javid Karathodi | MIC Arts &amp; Science College, Athanikkal, Valluvambram
+</div>
+
+<script>
+  // ========== Number to Words (Indian system) ==========
+  function numberToWords(num) {
+    num = Math.floor(Math.abs(Number(num) || 0));
+    if (num === 0) return 'ZERO ONLY';
+    const ones = ['','ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE','TEN',
+      'ELEVEN','TWELVE','THIRTEEN','FOURTEEN','FIFTEEN','SIXTEEN','SEVENTEEN','EIGHTEEN','NINETEEN'];
+    const tens = ['','','TWENTY','THIRTY','FORTY','FIFTY','SIXTY','SEVENTY','EIGHTY','NINETY'];
+    function upTo99(x) {
+      if (x < 20) return ones[x];
+      return tens[Math.floor(x/10)] + (x % 10 ? ' ' + ones[x % 10] : '');
+    }
+    function upTo999(x) {
+      if (x < 100) return upTo99(x);
+      return ones[Math.floor(x/100)] + ' HUNDRED' + (x % 100 ? ' AND ' + upTo99(x % 100) : '');
+    }
+    let str = '';
+    const crore = Math.floor(num / 10000000); num %= 10000000;
+    const lakh  = Math.floor(num / 100000);   num %= 100000;
+    const th    = Math.floor(num / 1000);     num %= 1000;
+    if (crore) str += upTo99(crore) + ' CRORE ';
+    if (lakh)  str += upTo99(lakh)  + ' LAKH ';
+    if (th)    str += upTo999(th)   + ' THOUSAND ';
+    if (num)   str += upTo999(num);
+    return str.trim() + ' ONLY';
+  }
+
+  function extractNum(val) {
+    if (val === null || val === undefined || val === '') return 0;
+    const s = String(val);
+    if (s.includes('=')) return parseFloat(s.split('=').pop()) || 0;
+    return parseFloat(s) || 0;
+  }
+
+  function getRate() {
+    return parseFloat(document.getElementById('rate_per_script').value) || 20;
+  }
+
+  // Auto-fill P when (a) or (b) changes:  (a-b) x rate = amount
+  function calcAll() {
+    const a = parseFloat(document.getElementById('val_a').value) || 0;
+    const b = parseFloat(document.getElementById('val_b').value) || 0;
+    const rate = getRate();
+    const payable = Math.max(0, a - b);
+
+    // Auto P only if user hasn't typed a custom formula that we shouldn't overwrite?
+    // Always auto-update P from a,b,rate for convenience
+    if (a > 0) {
+      document.getElementById('val_p').value = payable + ' x ' + rate + ' = ' + (payable * rate);
+    } else {
+      // leave P as is if a is empty
+    }
+
+    // QP total
+    const qp1 = extractNum(document.getElementById('qp_rem_qp').value);
+    const qp2 = extractNum(document.getElementById('qp_rem_key').value);
+    const qpTot = qp1 + qp2;
+    document.getElementById('qp_total').value = qpTot || '';
+    document.getElementById('qp_words').value = qpTot ? numberToWords(qpTot) : '';
+
+    // Valuation totals
+    const p = extractNum(document.getElementById('val_p').value);
+    const q = extractNum(document.getElementById('val_q').value);
+    const r = extractNum(document.getElementById('val_r').value);
+    const t = extractNum(document.getElementById('val_t').value);
+    const pqr = p + q + r;
+    document.getElementById('val_total_pqr').value = pqr || '';
+    document.getElementById('val_total_t').value = t || '';
+    document.getElementById('val_words').value = pqr ? numberToWords(pqr) : '';
+
+    // Practical total
+    const pp = extractNum(document.getElementById('prac_p').value);
+    const pq = extractNum(document.getElementById('prac_q').value);
+    const pr = extractNum(document.getElementById('prac_r').value);
+    const ps = extractNum(document.getElementById('prac_s').value);
+    const pt = extractNum(document.getElementById('prac_t').value);
+    const pracTot = pp + pq + pr + ps + pt;
+    document.getElementById('prac_total').value = pracTot || '';
+    document.getElementById('prac_words').value = pracTot ? numberToWords(pracTot) : '';
+
+    // Grand total
+    const grand = qpTot + pqr + t + pracTot;
+    document.getElementById('grand_total').value = grand || '';
+  }
+
+  // If user types manually in P field
+  function calcManualP() {
+    const p = extractNum(document.getElementById('val_p').value);
+    const q = extractNum(document.getElementById('val_q').value);
+    const r = extractNum(document.getElementById('val_r').value);
+    const t = extractNum(document.getElementById('val_t').value);
+    const pqr = p + q + r;
+    document.getElementById('val_total_pqr').value = pqr || '';
+    document.getElementById('val_total_t').value = t || '';
+    document.getElementById('val_words').value = pqr ? numberToWords(pqr) : '';
+
+    const qpTot = extractNum(document.getElementById('qp_total').value);
+    const pracTot = extractNum(document.getElementById('prac_total').value);
+    document.getElementById('grand_total').value = (qpTot + pqr + t + pracTot) || '';
+  }
+
+  function toggleStrike() {
+    document.getElementById('sec11_wrap').classList.toggle('struck', document.getElementById('strike_11').checked);
+    document.getElementById('sec13_wrap').classList.toggle('struck', document.getElementById('strike_13').checked);
+  }
+
+  function syncName() {
+    // optional: copy name to certificate signature field
+    const n = document.getElementById('name').value;
+    const cert = document.getElementById('cert_name_sign');
+    if (cert && !cert.dataset.touched) cert.value = n;
+  }
+
+  function saveDraft() {
+    const data = {};
+    document.querySelectorAll('input, textarea').forEach(el => {
+      const key = el.id || el.name;
+      if (!key) return;
+      if (el.type === 'checkbox') data[key] = el.checked;
+      else data[key] = el.value;
+    });
+    localStorage.setItem('calicutRemBill', JSON.stringify(data));
+    alert('Draft saved in this browser.');
+  }
+
+  function loadDraft() {
+    const raw = localStorage.getItem('calicutRemBill');
+    if (!raw) { alert('No saved draft found.'); return; }
+    const data = JSON.parse(raw);
+    document.querySelectorAll('input, textarea').forEach(el => {
+      const key = el.id || el.name;
+      if (!(key in data)) return;
+      if (el.type === 'checkbox') el.checked = !!data[key];
+      else el.value = data[key];
+    });
+    toggleStrike();
+    calcAll();
+    alert('Draft loaded.');
+  }
+
+  function clearAll() {
+    if (!confirm('Clear all fields?')) return;
+    document.querySelectorAll('input, textarea').forEach(el => {
+      if (el.type === 'checkbox') {
+        if (el.id === 'strike_11' || el.id === 'strike_13') el.checked = true;
+        else if (el.id === 'col_sf') el.checked = true;
+        else el.checked = false;
+      } else if (el.id === 'rate_per_script') {
+        el.value = 20;
+      } else if (el.id === 'exam_name') {
+        el.value = 'THIRD SEMESTER FYUG EXAMINATION NOVEMBER 2025';
+      } else if (el.id === 'designation') {
+        el.value = 'ASSISTANT PROFESSOR';
+      } else {
+        el.value = '';
+      }
+    });
+    toggleStrike();
+    localStorage.removeItem('calicutRemBill');
+  }
+
+  // Init
+  document.addEventListener('DOMContentLoaded', () => {
+    toggleStrike();
+    // mark certificate name as manually touched when user types
+    const cert = document.getElementById('cert_name_sign');
+    if (cert) cert.addEventListener('input', () => { cert.dataset.touched = '1'; });
+  });
+</script>
+</body>
+</html>
