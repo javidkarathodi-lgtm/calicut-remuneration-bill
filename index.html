@@ -177,7 +177,7 @@
       font-family: 'Times New Roman', Times, serif;
       font-size: 11.5px;
       color: #000;
-      padding: 2px 4px;
+      padding: 2px 3px;
       outline: none;
     }
     input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
@@ -185,7 +185,7 @@
     }
     textarea {
       resize: none;
-      line-height: 1.25;
+      line-height: 1.2;
       overflow: hidden;
     }
     .bold-upper {
@@ -225,10 +225,11 @@
     }
     table.grid-table th, table.grid-table td {
       border: 1px solid #000;
-      padding: 2.5px 3px;
+      padding: 2px 2px;
       text-align: center;
       vertical-align: middle;
       word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     table.grid-table th {
       font-weight: normal;
@@ -449,15 +450,17 @@
 
     /* Multi-paper valuation rows */
     .val-paper-row td {
-      padding: 3px 4px;
+      padding: 2px 2px;
       vertical-align: middle;
     }
     .val-paper-row textarea {
-      font-size: 11px;
-      line-height: 1.25;
-      min-height: 24px;
+      font-size: 10.5px;
+      line-height: 1.2;
+      min-height: 22px;
       display: block;
       background: #fefce8;
+      padding: 1px 2px;
+      word-break: break-all;
     }
     .val-paper-row input {
       font-size: 11px;
@@ -690,16 +693,16 @@
   <table class="grid-table" id="val_papers_table">
     <thead>
       <tr>
-        <th rowspan="2" style="width:32%">Name of the<br>Programme/Examination/Paper</th>
-        <th colspan="2" style="width:22%">False No. of answer scripts</th>
-        <th rowspan="2" style="width:20%">Duration of Paper<br>with question<br>paper code</th>
+        <th rowspan="2" style="width:28%">Name of the<br>Programme/Examination/Paper</th>
+        <th colspan="2" style="width:28%">False No. of answer scripts</th>
+        <th rowspan="2" style="width:18%">Duration of Paper<br>with question<br>paper code</th>
         <th rowspan="2" style="width:11%">No. of Answer<br>scripts valued<br>(a)</th>
         <th rowspan="2" style="width:11%">Mandatory minimum<br>No. of answer scripts<br>(b)</th>
         <th rowspan="2" style="width:4%" class="no-print">Del</th>
       </tr>
       <tr>
-        <th style="width:11%">From</th>
-        <th style="width:11%">To</th>
+        <th style="width:14%">From</th>
+        <th style="width:14%">To</th>
       </tr>
     </thead>
     <tbody id="val_papers_body">
@@ -977,8 +980,8 @@
     tr.dataset.index = index;
     tr.innerHTML = `
       <td><textarea class="val_paper bold-upper left" rows="1" oninput="autoResize(this)" placeholder="Enter Paper Code & Name"></textarea></td>
-      <td><input type="text" class="val_from bold-upper" placeholder="From" /></td>
-      <td><input type="text" class="val_to bold-upper" placeholder="To" /></td>
+      <td><textarea class="val_from bold-upper" rows="1" oninput="autoResize(this)" placeholder="From Reg No"></textarea></td>
+      <td><textarea class="val_to bold-upper" rows="1" oninput="autoResize(this)" placeholder="To Reg No"></textarea></td>
       <td><textarea class="val_qpcode bold-upper" rows="1" oninput="autoResize(this)" placeholder="QP Code & Hrs"></textarea></td>
       <td><input type="number" class="val_a" min="0" oninput="calcAll()" placeholder="0" /></td>
       <td><input type="number" class="val_b" min="0" oninput="calcAll()" /></td>
@@ -1136,8 +1139,8 @@
           const aEl = tr.querySelector('.val_a');
           const bEl = tr.querySelector('.val_b');
           if (pEl) { pEl.value = p.paper || ''; autoResize(pEl); }
-          if (fromEl) fromEl.value = p.from || '';
-          if (toEl) toEl.value = p.to || '';
+          if (fromEl) { fromEl.value = p.from || ''; autoResize(fromEl); }
+          if (toEl) { toEl.value = p.to || ''; autoResize(toEl); }
           if (qEl) { qEl.value = p.qpcode || ''; autoResize(qEl); }
           if (aEl) aEl.value = p.a || '';
           if (bEl) bEl.value = p.b || '';
