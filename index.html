@@ -70,7 +70,8 @@
     .btn-save  { background: #3182ce; }
     .btn-load  { background: #38a169; }
     .btn-clear { background: #e53e3e; }
-    .btn-add   { background: #805ad5; font-size: 11px; padding: 3px 10px; }
+    .btn-add   { background: #2b6cb0; font-size: 11px; padding: 3px 10px; font-family: system-ui, sans-serif; }
+    .btn-add:disabled { background: #a0aec0; cursor: not-allowed; }
 
     /* A4 Page Layout */
     .page {
@@ -83,7 +84,7 @@
       position: relative;
     }
 
-    /* Exact Header Styling matching Image 2 */
+    /* Exact Header Styling */
     h1 {
       text-align: center;
       font-size: 16.5px;
@@ -119,7 +120,7 @@
       text-transform: uppercase;
       padding: 0 6px;
       margin: 0 4px;
-      background: transparent;
+      background: #fefce8;
       outline: none;
     }
 
@@ -223,7 +224,7 @@
     }
     table.grid-table th, table.grid-table td {
       border: 1px solid #000;
-      padding: 2px 3px;
+      padding: 2.5px 3px;
       text-align: center;
       vertical-align: middle;
       word-wrap: break-word;
@@ -281,7 +282,7 @@
       margin-top: 3px;
     }
 
-    /* ==================== PAGE 2 EXACT STYLES (Image 3) ==================== */
+    /* ==================== PAGE 2 EXACT STYLES ==================== */
     .sig-box-table {
       width: 100%;
       border-collapse: collapse;
@@ -356,7 +357,7 @@
       line-height: 1.2;
     }
 
-    /* Separate Office Box & Audit Table matching Image 3 */
+    /* Separate Office Box & Audit Table */
     .office-box {
       border: 1px solid #000;
       margin-top: 4px;
@@ -447,17 +448,19 @@
 
     /* Multi-paper valuation rows */
     .val-paper-row td {
-      padding: 2px 3px;
+      padding: 3px 4px;
       vertical-align: middle;
     }
     .val-paper-row textarea {
-      font-size: 10.5px;
-      line-height: 1.2;
-      min-height: 22px;
+      font-size: 11px;
+      line-height: 1.25;
+      min-height: 24px;
       display: block;
+      background: #fefce8;
     }
     .val-paper-row input {
       font-size: 11px;
+      background: #fefce8;
     }
 
     @media print {
@@ -476,12 +479,13 @@
       input, textarea {
         background: transparent !important;
       }
-      .inline-field input[type="text"] {
+      .inline-field input[type="text"], .val-paper-row textarea, .val-paper-row input {
         border-bottom: none !important;
         background: transparent !important;
       }
       .exam-input, .words-row input, .grand-row input, .dotted-inline {
         border-bottom: 1px dotted #000 !important;
+        background: transparent !important;
       }
       .strike-wrap.struck::after {
         -webkit-print-color-adjust: exact;
@@ -540,14 +544,14 @@
       <td class="sl-col">1 a.</td>
       <td>Name of QP Setter/Examiner/Chief/Chairperson <em>(in block letters)</em></td>
       <td>
-        <input type="text" id="name" class="bold-upper" placeholder="ENTER NAME IN BLOCK LETTERS" />
+        <input type="text" id="name" class="bold-upper" style="background:#fefce8" placeholder="ENTER NAME IN BLOCK LETTERS" />
       </td>
     </tr>
     <tr>
       <td class="sl-col">b.</td>
       <td>Calicut University Teacher Unique ID No.</td>
       <td>
-        <input type="text" id="teacher_id" class="bold-upper" placeholder="ENTER TEACHER ID" />
+        <input type="text" id="teacher_id" class="bold-upper" style="background:#fefce8" placeholder="ENTER TEACHER ID" />
       </td>
     </tr>
     <tr>
@@ -572,13 +576,13 @@
       <td style="vertical-align:top">
         <div style="display:flex; gap:6px">
           <span style="white-space:nowrap">Office address :<br><em>(in block<br>letters)</em></span>
-          <textarea id="office_address" rows="2" class="bold-upper" oninput="autoResize(this)">MIC ARTS AND SCIENCE COLLEGE, ATHANIKKAL</textarea>
+          <textarea id="office_address" rows="2" class="bold-upper" style="background:#fefce8" oninput="autoResize(this)">MIC ARTS AND SCIENCE COLLEGE, ATHANIKKAL</textarea>
         </div>
       </td>
       <td style="vertical-align:top">
         <div style="display:flex; gap:6px">
           <span style="white-space:nowrap">Home :<br><em>(in block<br>letters)</em></span>
-          <textarea id="home_address" rows="2" class="bold-upper" placeholder="ENTER HOME ADDRESS" oninput="autoResize(this)"></textarea>
+          <textarea id="home_address" rows="2" class="bold-upper" style="background:#fefce8" placeholder="ENTER HOME ADDRESS" oninput="autoResize(this)"></textarea>
         </div>
       </td>
     </tr>
@@ -633,7 +637,7 @@
         Name of the disbursing Officer (Treasury Officer in the case of Govt. College Teachers, Principal in the case of Aided College Teachers).
       </td>
       <td>
-        <input type="text" id="disbursing_officer" class="bold-upper" />
+        <input type="text" id="disbursing_officer" class="bold-upper" style="background:#fefce8" />
       </td>
     </tr>
   </table>
@@ -673,29 +677,32 @@
     </div>
   </div>
 
-  <!-- Section 12: Valuation - MULTIPLE PAPERS -->
+  <!-- Section 12: Valuation - UP TO 4 PAPERS -->
   <div class="sec-title">
     <span>* 12 For Valuation / Revaluation / Picking out / Despatching of answer scripts</span>
-    <button type="button" class="btn btn-add no-print" onclick="addValRow()">+ Add Paper Row</button>
+    <div class="no-print" style="display:flex; align-items:center; gap:6px">
+      <span id="paper_count_lbl" style="font-family:system-ui,sans-serif; font-size:10.5px; color:#2b6cb0">(1 / 4 Papers)</span>
+      <button type="button" id="btn_add_paper" class="btn btn-add" onclick="addValRow()">+ Add Paper (Max 4)</button>
+    </div>
   </div>
 
   <table class="grid-table" id="val_papers_table">
     <thead>
       <tr>
-        <th rowspan="2" style="width:30%">Name of the<br>Programme/Examination/Paper</th>
-        <th colspan="2" style="width:24%">False No. of answer scripts</th>
+        <th rowspan="2" style="width:32%">Name of the<br>Programme/Examination/Paper</th>
+        <th colspan="2" style="width:22%">False No. of answer scripts</th>
         <th rowspan="2" style="width:20%">Duration of Paper<br>with question<br>paper code</th>
         <th rowspan="2" style="width:11%">No. of Answer<br>scripts valued<br>(a)</th>
         <th rowspan="2" style="width:11%">Mandatory minimum<br>No. of answer scripts<br>(b)</th>
         <th rowspan="2" style="width:4%" class="no-print">Del</th>
       </tr>
       <tr>
-        <th style="width:12%">From</th>
-        <th style="width:12%">To</th>
+        <th style="width:11%">From</th>
+        <th style="width:11%">To</th>
       </tr>
     </thead>
     <tbody id="val_papers_body">
-      <!-- Dynamic Paper Rows Added Here -->
+      <!-- Dynamic Paper Rows (1 to 4) Added Here -->
     </tbody>
   </table>
 
@@ -787,7 +794,7 @@
   </div>
 </div>
 
-<!-- ==================== PAGE 2 (Exact Match to Image 3) ==================== -->
+<!-- ==================== PAGE 2 ==================== -->
 <div class="page">
   <div class="sec-title"><span>14 &nbsp;&nbsp; Name &amp; Signature of :</span></div>
   <table class="sig-box-table">
@@ -952,46 +959,55 @@
     return parseFloat(document.getElementById('rate_per_script').value) || 20;
   }
 
-  // ---------- Multi-paper valuation ----------
+  // ---------- Multi-paper valuation (1 to 4 Papers) ----------
   let valRowCount = 0;
-  const MAX_VAL_ROWS = 6;
+  const MAX_VAL_ROWS = 4;
+
+  function updatePaperCounterUI() {
+    const lbl = document.getElementById('paper_count_lbl');
+    const btn = document.getElementById('btn_add_paper');
+    if (lbl) lbl.textContent = `(${valRowCount} / ${MAX_VAL_ROWS} Papers)`;
+    if (btn) btn.disabled = (valRowCount >= MAX_VAL_ROWS);
+  }
 
   function createValRow(index) {
     const tr = document.createElement('tr');
     tr.className = 'val-paper-row';
     tr.dataset.index = index;
     tr.innerHTML = `
-      <td><textarea class="val_paper bold-upper left" rows="1" oninput="autoResize(this)" placeholder="Paper Code & Full Name"></textarea></td>
+      <td><textarea class="val_paper bold-upper left" rows="1" oninput="autoResize(this)" placeholder="Enter Paper Code & Name"></textarea></td>
       <td><input type="text" class="val_from bold-upper" placeholder="From" /></td>
       <td><input type="text" class="val_to bold-upper" placeholder="To" /></td>
       <td><textarea class="val_qpcode bold-upper" rows="1" oninput="autoResize(this)" placeholder="QP Code & Hrs"></textarea></td>
-      <td><input type="number" class="val_a" min="0" oninput="calcAll()" /></td>
+      <td><input type="number" class="val_a" min="0" oninput="calcAll()" placeholder="0" /></td>
       <td><input type="number" class="val_b" min="0" oninput="calcAll()" /></td>
-      <td class="no-print"><button type="button" class="btn btn-clear" style="padding:2px 6px; font-size:10px" onclick="removeValRow(this)">✕</button></td>
+      <td class="no-print"><button type="button" class="btn btn-clear" style="padding:2px 6px; font-size:10px" onclick="removeValRow(this)" title="Remove Paper">✕</button></td>
     `;
     return tr;
   }
 
   function addValRow() {
     if (valRowCount >= MAX_VAL_ROWS) {
-      alert('Maximum ' + MAX_VAL_ROWS + ' papers allowed.');
+      alert('Maximum ' + MAX_VAL_ROWS + ' papers can be added.');
       return;
     }
     const tbody = document.getElementById('val_papers_body');
     const tr = createValRow(valRowCount);
     tbody.appendChild(tr);
     valRowCount++;
+    updatePaperCounterUI();
   }
 
   function removeValRow(btn) {
     const tbody = document.getElementById('val_papers_body');
     if (tbody.querySelectorAll('tr').length <= 1) {
-      alert('At least 1 row is required.');
+      alert('At least 1 paper row is required.');
       return;
     }
     const tr = btn.closest('tr');
     tr.remove();
     valRowCount--;
+    updatePaperCounterUI();
     calcAll();
   }
 
@@ -1085,12 +1101,12 @@
     const papers = [];
     document.querySelectorAll('#val_papers_body tr').forEach(tr => {
       papers.push({
-        paper: tr.querySelector('.val_paper')?.value || '',
-        from: tr.querySelector('.val_from')?.value || '',
-        to: tr.querySelector('.val_to')?.value || '',
-        qpcode: tr.querySelector('.val_qpcode')?.value || '',
-        a: tr.querySelector('.val_a')?.value || '',
-        b: tr.querySelector('.val_b')?.value || ''
+        paper: tr.querySelector('.val_paper') ? tr.querySelector('.val_paper').value : '',
+        from: tr.querySelector('.val_from') ? tr.querySelector('.val_from').value : '',
+        to: tr.querySelector('.val_to') ? tr.querySelector('.val_to').value : '',
+        qpcode: tr.querySelector('.val_qpcode') ? tr.querySelector('.val_qpcode').value : '',
+        a: tr.querySelector('.val_a') ? tr.querySelector('.val_a').value : '',
+        b: tr.querySelector('.val_b') ? tr.querySelector('.val_b').value : ''
       });
     });
     data._val_papers = papers;
@@ -1108,18 +1124,22 @@
     valRowCount = 0;
 
     if (data._val_papers && Array.isArray(data._val_papers)) {
-      data._val_papers.forEach(p => {
+      data._val_papers.slice(0, MAX_VAL_ROWS).forEach(p => {
         addValRow();
         const tr = document.querySelector('#val_papers_body tr:last-child');
         if (tr) {
           const pEl = tr.querySelector('.val_paper');
+          const fromEl = tr.querySelector('.val_from');
+          const toEl = tr.querySelector('.val_to');
           const qEl = tr.querySelector('.val_qpcode');
+          const aEl = tr.querySelector('.val_a');
+          const bEl = tr.querySelector('.val_b');
           if (pEl) { pEl.value = p.paper || ''; autoResize(pEl); }
-          if (tr.querySelector('.val_from')) tr.querySelector('.val_from').value = p.from || '';
-          if (tr.querySelector('.val_to')) tr.querySelector('.val_to')?.value = p.to || '';
+          if (fromEl) fromEl.value = p.from || '';
+          if (toEl) toEl.value = p.to || '';
           if (qEl) { qEl.value = p.qpcode || ''; autoResize(qEl); }
-          if (tr.querySelector('.val_a')) tr.querySelector('.val_a').value = p.a || '';
-          if (tr.querySelector('.val_b')) tr.querySelector('.val_b').value = p.b || '';
+          if (aEl) aEl.value = p.a || '';
+          if (bEl) bEl.value = p.b || '';
         }
       });
     }
@@ -1134,7 +1154,7 @@
       }
     });
 
-    while (valRowCount < 4) addValRow();
+    if (valRowCount === 0) addValRow();
 
     toggleStrike();
     calcAll();
@@ -1162,15 +1182,15 @@
     });
     document.getElementById('val_papers_body').innerHTML = '';
     valRowCount = 0;
-    for (let i = 0; i < 4; i++) addValRow();
+    addValRow();
     toggleStrike();
     localStorage.removeItem('calicutRemBill');
   }
 
-  // Init
+  // Init with 1 Paper Row by default (can add up to 4)
   document.addEventListener('DOMContentLoaded', () => {
     toggleStrike();
-    for (let i = 0; i < 4; i++) addValRow();
+    addValRow();
   });
 </script>
 </body>
