@@ -79,9 +79,43 @@
       min-height: 297mm;
       margin: 0 auto 18px;
       background: #fff;
-      padding: 8mm 10mm;
+      padding: 7mm 9mm;
       box-shadow: 0 2px 10px rgba(0,0,0,0.18);
       position: relative;
+    }
+
+    /* Compact mode automatically applied when 5-7 papers are added so Page 1 fits cleanly on 1 A4 */
+    .page.compact-mode {
+      padding: 5.5mm 8.5mm;
+    }
+    .page.compact-mode h1 {
+      font-size: 15.5px;
+      margin-bottom: 2px;
+    }
+    .page.compact-mode .sub-header {
+      font-size: 11.5px;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .page.compact-mode table.form-table td {
+      padding: 2px 4px;
+    }
+    .page.compact-mode .sec-title {
+      margin: 3.5px 0 1.5px;
+    }
+    .page.compact-mode .val-paper-row td {
+      padding: 1.5px 2px;
+    }
+    .page.compact-mode .val-paper-row textarea {
+      min-height: 18px;
+      font-size: 10px;
+      line-height: 1.15;
+    }
+    .page.compact-mode .words-row {
+      padding: 2px 5px;
+    }
+    .page.compact-mode .grand-row {
+      margin-top: 3px;
     }
 
     /* Fixed Header Styling - Clean & Centered */
@@ -91,13 +125,13 @@
       font-weight: bold;
       letter-spacing: 0.5px;
       text-decoration: underline;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
     .sub-header {
       font-size: 12.5px;
       font-weight: bold;
-      line-height: 1.45;
-      margin-bottom: 6px;
+      line-height: 1.4;
+      margin-bottom: 5px;
       text-align: center;
     }
     .exam-line-row {
@@ -129,13 +163,13 @@
     table.form-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
       font-size: 11px;
       table-layout: fixed;
     }
     table.form-table td, table.form-table th {
       border: 1px solid #000;
-      padding: 3px 5px;
+      padding: 2.5px 5px;
       vertical-align: middle;
     }
     .sl-col {
@@ -177,7 +211,7 @@
       font-family: 'Times New Roman', Times, serif;
       font-size: 11.5px;
       color: #000;
-      padding: 2px 3px;
+      padding: 1.5px 3px;
       outline: none;
     }
     input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
@@ -196,7 +230,7 @@
     .sec-title {
       font-size: 11px;
       font-weight: bold;
-      margin: 5px 0 2px;
+      margin: 4px 0 2px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -248,7 +282,7 @@
     .words-row {
       border: 1px solid #000;
       border-top: none;
-      padding: 3px 6px;
+      padding: 2.5px 6px;
       font-size: 10.5px;
       display: flex;
       align-items: baseline;
@@ -262,7 +296,7 @@
     }
 
     .grand-row {
-      margin-top: 5px;
+      margin-top: 4px;
       font-size: 11.5px;
       font-weight: bold;
       display: flex;
@@ -456,7 +490,7 @@
     .val-paper-row textarea {
       font-size: 10.5px;
       line-height: 1.2;
-      min-height: 22px;
+      min-height: 21px;
       display: block;
       background: #fefce8;
       padding: 1px 2px;
@@ -476,8 +510,11 @@
         margin: 0;
         width: 210mm;
         height: 297mm;
-        padding: 7mm 9mm;
+        padding: 6.5mm 9mm;
         page-break-after: always;
+      }
+      .page.compact-mode {
+        padding: 5mm 8.5mm;
       }
       .page:last-of-type { page-break-after: auto; }
 
@@ -543,7 +580,7 @@
 </div>
 
 <!-- ==================== PAGE 1 ==================== -->
-<div class="page">
+<div class="page" id="page1">
   <h1>UNIVERSITY OF CALICUT</h1>
   <div class="sub-header">
     REMUNERATION BILL for Setting of Question papers, Valuation of answer papers of<br>
@@ -680,7 +717,7 @@
         <th>For Keys</th>
       </tr>
       <tr>
-        <td style="height:24px"><input type="text" id="qp_prog" class="left" /></td>
+        <td style="height:22px"><input type="text" id="qp_prog" class="left" /></td>
         <td><input type="text" id="qp_details" class="left" /></td>
         <td><input type="text" id="qp_set" /></td>
         <td><input type="text" id="qp_keys" /></td>
@@ -699,12 +736,12 @@
     </div>
   </div>
 
-  <!-- Section 12: Valuation - UP TO 4 PAPERS -->
+  <!-- Section 12: Valuation - UP TO 7 PAPERS -->
   <div class="sec-title">
     <span>* 12 For Valuation / Revaluation / Picking out / Despatching of answer scripts</span>
     <div class="no-print" style="display:flex; align-items:center; gap:6px">
-      <span id="paper_count_lbl" style="font-family:system-ui,sans-serif; font-size:10.5px; color:#2b6cb0">(1 / 4 Papers)</span>
-      <button type="button" id="btn_add_paper" class="btn btn-add" onclick="addValRow()">+ Add Paper (Max 4)</button>
+      <span id="paper_count_lbl" style="font-family:system-ui,sans-serif; font-size:10.5px; color:#2b6cb0">(1 / 7 Papers)</span>
+      <button type="button" id="btn_add_paper" class="btn btn-add" onclick="addValRow()">+ Add Paper (Max 7)</button>
     </div>
   </div>
 
@@ -724,12 +761,12 @@
       </tr>
     </thead>
     <tbody id="val_papers_body">
-      <!-- Dynamic Paper Rows (1 to 4) Added Here -->
+      <!-- Dynamic Paper Rows (1 to 7) Added Here -->
     </tbody>
   </table>
 
   <!-- Summary remuneration for valuation -->
-  <table class="grid-table" style="margin-top:4px">
+  <table class="grid-table" style="margin-top:3px">
     <tr>
       <th style="width:20%">Remuneration for<br>(a-b)<br>(P)</th>
       <th style="width:19%">Remuneration for<br>Discussion<br>(Q)</th>
@@ -738,18 +775,18 @@
       <th style="width:19%">Remuneration<br>for 'S'<br>(T)</th>
     </tr>
     <tr>
-      <td style="height:26px"><input type="text" id="val_p" oninput="calcManualP()" placeholder="e.g. 56 × 20 = 1120" /></td>
+      <td style="height:24px"><input type="text" id="val_p" oninput="calcManualP()" placeholder="e.g. 56 × 20 = 1120" /></td>
       <td><input type="number" id="val_q" oninput="calcAll()" /></td>
       <td><input type="number" id="val_r" oninput="calcAll()" /></td>
       <td><input type="text" id="val_s" /></td>
       <td><input type="number" id="val_t" oninput="calcAll()" /></td>
     </tr>
     <tr>
-      <td colspan="3" style="text-align:left; padding:3px 6px">
+      <td colspan="3" style="text-align:left; padding:2.5px 6px">
         Total (P+Q+R) Rs.
         <input type="text" id="val_total_pqr" style="width:120px; display:inline-block; border-bottom:1px dotted #000" />
       </td>
-      <td colspan="2" style="text-align:left; padding:3px 6px">
+      <td colspan="2" style="text-align:left; padding:2.5px 6px">
         Amount (T) Rs.
         <input type="text" id="val_total_t" style="width:90px; display:inline-block; border-bottom:1px dotted #000" />
       </td>
@@ -782,7 +819,7 @@
         <th style="width:13%">Conduct of<br>Viva if any<br>(T)</th>
       </tr>
       <tr>
-        <td style="height:24px"><input type="text" id="prac_batch" /></td>
+        <td style="height:22px"><input type="text" id="prac_batch" /></td>
         <td><input type="text" id="prac_reg" /></td>
         <td><input type="text" id="prac_pres" /></td>
         <td><input type="number" id="prac_p" oninput="calcAll()" /></td>
@@ -981,15 +1018,18 @@
     return parseFloat(document.getElementById('rate_per_script').value) || 20;
   }
 
-  // ---------- Multi-paper valuation (1 to 4 Papers) ----------
+  // ---------- Multi-paper valuation (1 to 7 Papers) ----------
   let valRowCount = 0;
-  const MAX_VAL_ROWS = 4;
+  const MAX_VAL_ROWS = 7;
 
   function updatePaperCounterUI() {
     const lbl = document.getElementById('paper_count_lbl');
     const btn = document.getElementById('btn_add_paper');
+    const p1 = document.getElementById('page1');
     if (lbl) lbl.textContent = `(${valRowCount} / ${MAX_VAL_ROWS} Papers)`;
     if (btn) btn.disabled = (valRowCount >= MAX_VAL_ROWS);
+    // Automatically enable compact spacing when 5 to 7 rows are used so Page 1 fits on single A4
+    if (p1) p1.classList.toggle('compact-mode', valRowCount >= 5);
   }
 
   function createValRow(index) {
@@ -1209,7 +1249,7 @@
     localStorage.removeItem('calicutRemBill');
   }
 
-  // Init with 1 Paper Row by default (can add up to 4)
+  // Init with 1 Paper Row by default (can add up to 7)
   document.addEventListener('DOMContentLoaded', () => {
     toggleStrike();
     addValRow();
