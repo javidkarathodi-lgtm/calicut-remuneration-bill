@@ -1,1511 +1,1219 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>University of Calicut - Interactive Mark Sheet | Designed by Javid Karathodi</title>
-<style>
-  * { box-sizing: border-box; }
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-    min-height: 100vh;
-    margin: 0;
-    padding: 16px 10px 30px 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #000;
-  }
-
-  /* Attractive Modern Dashboard Toolbar */
-  .toolbar {
-    background: rgba(15, 23, 42, 0.92);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    color: #fff;
-    padding: 14px 20px;
-    border-radius: 14px;
-    margin-bottom: 18px;
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.35);
-    max-width: 980px;
-    width: 100%;
-    justify-content: space-between;
-  }
-  .brand-box {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .brand-icon {
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    box-shadow: 0 3px 10px rgba(59, 130, 246, 0.45);
-  }
-  .brand-title {
-    font-weight: 800;
-    font-size: 15.5px;
-    letter-spacing: 0.3px;
-    color: #f8fafc;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .designer-badge {
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(59, 130, 246, 0.25));
-    border: 1px solid rgba(56, 189, 248, 0.45);
-    color: #7dd3fc;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 9px;
-    border-radius: 999px;
-    letter-spacing: 0.3px;
-  }
-  .brand-sub {
-    font-size: 11.5px;
-    color: #94a3b8;
-    display: block;
-    font-weight: 500;
-    margin-top: 2px;
-  }
-
-  .toolbar-controls {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .toolbar button {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 8px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: 13px;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  }
-  .toolbar button:hover {
-    transform: translateY(-1px);
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-  }
-  .toolbar button.voice-btn {
-    background: linear-gradient(135deg, #10b981, #059669);
-  }
-  .toolbar button.voice-btn.muted {
-    background: #475569;
-    color: #cbd5e1;
-  }
-  .toolbar button.clear-btn {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-  }
-  .toolbar select.exam-preset, .toolbar input.year-box {
-    background: #1e293b;
-    color: #f8fafc;
-    border: 1px solid #475569;
-    padding: 8px 11px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    outline: none;
-  }
-  .toolbar input.year-box {
-    width: 74px;
-    text-align: center;
-  }
-
-  .view-switcher {
-    display: flex;
-    background: #0f172a;
-    padding: 4px;
-    border-radius: 9px;
-    border: 1px solid #334155;
-  }
-  .view-switcher button {
-    background: transparent;
-    color: #94a3b8;
-    padding: 6px 12px;
-    font-size: 12.5px;
-    border: none;
-    box-shadow: none;
-  }
-  .view-switcher button.active {
-    background: #3b82f6;
-    color: #fff;
-  }
-
-  /* Status Pill for Spoken Number */
-  .voice-toast {
-    position: fixed;
-    bottom: 18px;
-    right: 18px;
-    background: #0f172a;
-    color: #38bdf8;
-    border: 1px solid #0284c7;
-    padding: 10px 16px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 700;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-    display: none;
-    z-index: 9999;
-    align-items: center;
-    gap: 8px;
-  }
-
-  /* A4 Sheet Container - Perfectly Balanced Full Height without Bottom Gap */
-  .a4-sheet {
-    background: #ffffff;
-    width: 210mm;
-    height: 297mm;
-    min-height: 297mm;
-    max-height: 297mm;
-    padding: 8mm 9.5mm;
-    display: none;
-    justify-content: space-between;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.55);
-    border-radius: 4px;
-    box-sizing: border-box;
-    position: relative;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 11px;
-  }
-
-  .column {
-    width: 48.6%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .top-block {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 3px;
-    font-weight: bold;
-    font-size: 11px;
-  }
-
-  .qp-box {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .qp-input {
-    border: none;
-    border-bottom: 1.5px solid #000;
-    width: 118px;
-    font-size: 11.5px;
-    font-weight: bold;
-    outline: none;
-    background: transparent;
-    padding: 1px 2px;
-  }
-
-  .uni-title {
-    text-align: center;
-    font-weight: bold;
-    font-size: 13.5px;
-    margin: 2px 0 1px 0;
-    letter-spacing: 0.5px;
-  }
-  .mark-sheet-title {
-    text-align: center;
-    font-weight: bold;
-    font-size: 12px;
-    margin-bottom: 6px;
-    letter-spacing: 0.5px;
-  }
-
-  .meta-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 5px;
-    font-size: 10.5px;
-    width: 100%;
-    gap: 3px;
-  }
-  .meta-row input {
-    border: none;
-    border-bottom: 1.5px solid #000;
-    outline: none;
-    background: transparent;
-    font-size: 10.5px;
-    font-weight: bold;
-    padding: 1px 2px;
-  }
-  .sem-input {
-    flex: 1;
-    min-width: 0;
-    text-align: center;
-  }
-  .month-input {
-    width: 56px;
-    text-align: center;
-  }
-  .yr-input {
-    width: 24px;
-    text-align: center;
-  }
-  .course-row {
-    display: flex;
-    align-items: flex-end;
-    margin-bottom: 6px;
-    font-size: 10.5px;
-    width: 100%;
-    gap: 4px;
-  }
-  .course-input {
-    flex: 1;
-    min-width: 0;
-    border: none;
-    border-bottom: 1.5px solid #000;
-    outline: none;
-    background: transparent;
-    font-size: 9.8px;
-    font-weight: bold;
-    padding: 1px 2px;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-
-  /* Table styling - Expanded Row Heights (27.5px) to Fill the Page Naturally */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1.5px solid #000;
-    margin-bottom: 4px;
-  }
-  th, td {
-    border: 1px solid #000;
-    padding: 0px 4px;
-    text-align: center;
-    height: 27.5px;
-    font-size: 11px;
-  }
-  th {
-    background-color: #f1f5f9;
-    font-weight: bold;
-    height: 22px;
-    font-size: 10.5px;
-  }
-  td input {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: transparent;
-    text-align: center;
-    outline: none;
-    font-size: 11.5px;
-    padding: 0;
-    font-family: inherit;
-    transition: background-color 0.15s;
-  }
-  td input:focus {
-    background-color: #eff6ff;
-  }
-  td input.reg-input {
-    text-align: left;
-    padding-left: 4px;
-    font-weight: bold;
-    font-size: 11px;
-  }
-  td input.fig-input {
-    font-weight: bold;
-    font-size: 12px;
-    color: #0f172a;
-  }
-  td input.words-input {
-    text-align: left;
-    padding-left: 5px;
-    font-size: 10px;
-    font-weight: bold;
-  }
-
-  .total-row td {
-    font-weight: bold;
-    text-align: left;
-    padding-left: 6px;
-    height: 27.5px;
-    background-color: #f8fafc;
-  }
-
-  .bottom-block {
-    margin-top: 2px;
-  }
-
-  .signature-section {
-    font-size: 10.5px;
-    margin-bottom: 4px;
-  }
-  .sig-header {
-    display: flex;
-    justify-content: flex-end;
-    gap: 48px;
-    padding-right: 14px;
-    margin-bottom: 4px;
-    font-weight: bold;
-    text-decoration: underline;
-    font-size: 10px;
-  }
-  .sig-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 6px;
-  }
-  .sig-label {
-    width: 82px;
-    font-weight: bold;
-  }
-  .sig-colon {
-    width: 8px;
-    font-weight: bold;
-  }
-  .sig-row input {
-    border: none;
-    border-bottom: 1px dotted #000;
-    flex: 1;
-    font-size: 10.5px;
-    font-weight: bold;
-    outline: none;
-    background: transparent;
-    padding: 2px 3px;
-  }
-
-  .bottom-date-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 10.5px;
-    font-weight: bold;
-    margin-top: 4px;
-    padding-top: 4px;
-  }
-  .bottom-date-row input {
-    border: none;
-    border-bottom: 1.5px solid #000;
-    width: 82px;
-    text-align: center;
-    font-size: 10.5px;
-    font-weight: bold;
-    outline: none;
-    background: transparent;
-  }
-  .session-select {
-    border: none;
-    border-bottom: 1.5px solid #000;
-    background: transparent;
-    font-size: 10.5px;
-    font-weight: bold;
-    padding: 0 4px;
-    outline: none;
-    cursor: pointer;
-  }
-
-  /* Mobile Easy Entry View */
-  .mobile-entry-container {
-    display: block;
-    background: #ffffff;
-    width: 100%;
-    max-width: 620px;
-    padding: 18px;
-    border-radius: 14px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
-  }
-  .mobile-meta-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 14px;
-    background: #f1f5f9;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-  }
-  .mobile-meta-grid input, .mobile-meta-grid select {
-    padding: 10px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-size: 13.5px;
-    width: 100%;
-    font-weight: 600;
-  }
-  .mobile-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 8px;
-    align-items: center;
-    background: #f8fafc;
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-  }
-  .mobile-row span {
-    font-weight: 800;
-    font-size: 13px;
-    width: 26px;
-    color: #475569;
-  }
-  .mobile-row input {
-    padding: 9px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-size: 14px;
-    outline: none;
-    font-weight: 600;
-  }
-  .mobile-row input:focus {
-    border-color: #2563eb;
-    background: #eff6ff;
-  }
-  .mob-reg { flex: 1.3; }
-  .mob-mark { flex: 0.7; text-align: center; }
-  .mob-words { flex: 1.4; font-weight: 800; color: #0f172a; font-size: 11.5px; padding-left: 4px; }
-
-  /* Attractive Developer Credit Footer (Visible on screen, hidden in print/PDF) */
-  .developer-footer {
-    margin-top: 22px;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    color: #e2e8f0;
-    padding: 12px 24px;
-    border-radius: 999px;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    text-align: center;
-  }
-  .developer-footer .dev-name {
-    color: #38bdf8;
-    font-weight: 800;
-    letter-spacing: 0.4px;
-  }
-  .developer-footer .dev-college {
-    color: #94a3b8;
-    font-weight: 600;
-    font-size: 12px;
-  }
-
-  @page {
-    size: A4 portrait;
-    margin: 0mm !important;
-  }
-
-  @media print {
-    html, body {
-      background: #fff !important;
-      padding: 0 !important;
-      margin: 0 !important;
-      width: 210mm !important;
-      height: 297mm !important;
-      overflow: hidden !important;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>University of Calicut – Remuneration Bill</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      background: #d9d9d9;
+      padding: 15px;
+      font-size: 12px;
+      color: #000;
     }
-    .toolbar, .voice-toast, .mobile-entry-container, .developer-footer { display: none !important; }
-    .a4-sheet {
-      display: flex !important;
-      width: 210mm !important;
-      height: 296mm !important;
-      min-height: 296mm !important;
-      max-height: 296mm !important;
-      padding: 7.5mm 9mm !important;
-      box-shadow: none !important;
-      border-radius: 0 !important;
-      margin: 0 !important;
-      page-break-after: avoid !important;
-      page-break-inside: avoid !important;
+
+    /* Toolbar / Controls */
+    .toolbar {
+      max-width: 210mm;
+      margin: 0 auto 12px;
+      background: #1a365d;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 12.5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-  }
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    .toolbar-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .toolbar label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.12);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .toolbar input[type="number"] {
+      width: 55px;
+      padding: 3px 5px;
+      border-radius: 3px;
+      border: none;
+      font-weight: bold;
+      text-align: center;
+      background: #fff;
+      color: #000;
+    }
+    .btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .btn-print { background: #ecc94b; color: #1a202c; }
+    .btn-save  { background: #3182ce; }
+    .btn-load  { background: #38a169; }
+    .btn-clear { background: #e53e3e; }
+    .btn-add   { background: #2b6cb0; font-size: 11px; padding: 3px 10px; font-family: system-ui, sans-serif; }
+    .btn-add:disabled { background: #a0aec0; cursor: not-allowed; }
+
+    /* A4 Page Layout */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 18px;
+      background: #fff;
+      padding: 8mm 10mm;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+      position: relative;
+    }
+
+    /* Fixed Header Styling - Clean & Centered */
+    h1 {
+      text-align: center;
+      font-size: 16.5px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      text-decoration: underline;
+      margin-bottom: 4px;
+    }
+    .sub-header {
+      font-size: 12.5px;
+      font-weight: bold;
+      line-height: 1.45;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .exam-line-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      width: 100%;
+      font-size: 12.5px;
+      font-weight: bold;
+      margin-top: 2px;
+    }
+    .exam-input {
+      flex: 1;
+      max-width: 560px;
+      border: none;
+      border-bottom: 1.5px dotted #000 !important;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 12.5px;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+      padding: 0 6px;
+      margin: 0 6px;
+      background: #fefce8;
+      outline: none;
+    }
+
+    /* Tables */
+    table.form-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 5px;
+      font-size: 11px;
+      table-layout: fixed;
+    }
+    table.form-table td, table.form-table th {
+      border: 1px solid #000;
+      padding: 3px 5px;
+      vertical-align: middle;
+    }
+    .sl-col {
+      width: 28px;
+      text-align: center;
+      font-weight: normal;
+      vertical-align: middle !important;
+    }
+
+    /* Inline Label + Input layout for PAN, Email, Bank, Mobile, IFSC */
+    .inline-field {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      width: 100%;
+    }
+    .inline-field .lbl {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .inline-field input[type="text"] {
+      flex: 1;
+      min-width: 80px;
+      border: none;
+      border-bottom: 1px dotted #555;
+      background: #fefce8;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 11.5px;
+      font-weight: bold;
+      color: #000;
+      padding: 1px 4px;
+      outline: none;
+    }
+
+    input[type="text"], input[type="number"], textarea {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 11.5px;
+      color: #000;
+      padding: 2px 3px;
+      outline: none;
+    }
+    input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+      background: #fef08a !important;
+    }
+    textarea {
+      resize: none;
+      line-height: 1.2;
+      overflow: hidden;
+    }
+    .bold-upper {
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .sec-title {
+      font-size: 11px;
+      font-weight: bold;
+      margin: 5px 0 2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Strike-off diagonal slash for Sections 11 & 13 */
+    .strike-wrap {
+      position: relative;
+    }
+    .strike-wrap.struck::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom right, transparent calc(50% - 1px), #000 50%, transparent calc(50% + 1px));
+      pointer-events: none;
+    }
+
+    table.grid-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+      table-layout: fixed;
+    }
+    table.grid-table th, table.grid-table td {
+      border: 1px solid #000;
+      padding: 2px 2px;
+      text-align: center;
+      vertical-align: middle;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    table.grid-table th {
+      font-weight: normal;
+      line-height: 1.15;
+      font-size: 10px;
+    }
+    table.grid-table input, table.grid-table textarea {
+      text-align: center;
+      font-weight: bold;
+      font-size: 11px;
+    }
+    table.grid-table input.left, table.grid-table textarea.left {
+      text-align: left;
+    }
+
+    .words-row {
+      border: 1px solid #000;
+      border-top: none;
+      padding: 3px 6px;
+      font-size: 10.5px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .words-row input {
+      flex: 1;
+      border-bottom: 1px dotted #000;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .grand-row {
+      margin-top: 5px;
+      font-size: 11.5px;
+      font-weight: bold;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .grand-row input {
+      width: 150px;
+      border-bottom: 1px dotted #000;
+      font-size: 12.5px;
+      font-weight: bold;
+    }
+    .footer-note {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: bold;
+      font-style: italic;
+      margin-top: 3px;
+    }
+
+    /* ==================== PAGE 2 EXACT STYLES ==================== */
+    .sig-box-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 3px;
+    }
+    .sig-box-table td {
+      border: 1px solid #000;
+      width: 25%;
+      height: 56px;
+      vertical-align: bottom;
+      text-align: center;
+      padding: 3px 4px;
+      font-size: 10.5px;
+    }
+    .sig-box-table input {
+      text-align: center;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-size: 10.5px;
+    }
+
+    .cert-section {
+      margin-top: 8px;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .cert-section h3 {
+      text-align: center;
+      font-size: 11.5px;
+      text-decoration: underline;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
+    .cert-section p {
+      text-indent: 36px;
+      text-align: justify;
+      margin-bottom: 4px;
+    }
+    .cert-layout {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 2px;
+      margin-bottom: 6px;
+    }
+    .cert-left-spacer {
+      width: 34%;
+    }
+    .cert-mid-sign {
+      width: 50%;
+      text-align: left;
+      font-size: 10.5px;
+      line-height: 1.35;
+    }
+    .cert-mid-sign input {
+      text-align: left;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .stamp-box {
+      border: 1px solid #000;
+      width: 82px;
+      height: 58px;
+      padding: 3px;
+      font-size: 8px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.2;
+    }
+
+    /* Separate Office Box & Audit Table */
+    .office-box {
+      border: 1px solid #000;
+      margin-top: 4px;
+      font-size: 10.5px;
+      padding: 5px 10px 8px;
+    }
+    .office-title {
+      text-align: center;
+      font-weight: bold;
+      text-decoration: underline;
+      margin-bottom: 6px;
+      font-size: 11px;
+    }
+    .office-line {
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+    .dotted-inline {
+      border-bottom: 1px dotted #000 !important;
+      display: inline-block;
+      width: 85px !important;
+      text-align: center;
+      height: 16px;
+    }
+    .office-sign-block {
+      margin-left: 38%;
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+
+    .audit-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 10.5px;
+    }
+    .audit-table td {
+      border: 1px solid #000;
+      width: 50%;
+      padding: 6px 8px;
+      vertical-align: top;
+      line-height: 1.55;
+    }
+    .audit-head {
+      text-align: center;
+      font-weight: bold;
+      text-decoration: underline;
+      margin-bottom: 6px;
+    }
+    .audit-officers td {
+      padding: 3px 10px !important;
+      border-top: 1px solid #000;
+      font-style: italic;
+    }
+    .officer-flex {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .inst-section {
+      margin-top: 8px;
+      font-size: 9.8px;
+      line-height: 1.32;
+    }
+    .inst-section h4 {
+      text-align: center;
+      font-size: 10.5px;
+      text-decoration: underline;
+      margin: 6px 0 3px;
+    }
+    .inst-section ol {
+      padding-left: 18px;
+    }
+    .inst-section li {
+      margin-bottom: 2px;
+      text-align: justify;
+    }
+
+    .dev-footer {
+      max-width: 210mm;
+      margin: 0 auto 20px;
+      text-align: center;
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      color: #444;
+    }
+
+    /* Multi-paper valuation rows */
+    .val-paper-row td {
+      padding: 2px 2px;
+      vertical-align: middle;
+    }
+    .val-paper-row textarea {
+      font-size: 10.5px;
+      line-height: 1.2;
+      min-height: 22px;
+      display: block;
+      background: #fefce8;
+      padding: 1px 2px;
+      word-break: break-all;
+    }
+    .val-paper-row input {
+      font-size: 11px;
+      background: #fefce8;
+    }
+
+    @media print {
+      @page { size: A4 portrait; margin: 0; }
+      body { background: #fff; padding: 0; }
+      .toolbar, .dev-footer, .no-print { display: none !important; }
+      .page {
+        box-shadow: none;
+        margin: 0;
+        width: 210mm;
+        height: 297mm;
+        padding: 7mm 9mm;
+        page-break-after: always;
+      }
+      .page:last-of-type { page-break-after: auto; }
+
+      /* Hide all placeholder hints when printing / saving PDF */
+      input::placeholder,
+      textarea::placeholder {
+        color: transparent !important;
+        opacity: 0 !important;
+      }
+      input::-webkit-input-placeholder,
+      textarea::-webkit-input-placeholder {
+        color: transparent !important;
+        opacity: 0 !important;
+      }
+      input::-moz-placeholder,
+      textarea::-moz-placeholder {
+        color: transparent !important;
+        opacity: 0 !important;
+      }
+
+      input, textarea {
+        background: transparent !important;
+      }
+      .inline-field input[type="text"], .val-paper-row textarea, .val-paper-row input {
+        border-bottom: none !important;
+        background: transparent !important;
+      }
+      .exam-input, .words-row input, .grand-row input, .dotted-inline {
+        border-bottom: 1px dotted #000 !important;
+        background: transparent !important;
+      }
+      .strike-wrap.struck::after {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<datalist id="exam-presets">
-  <option value="First Semester FYUG">
-  <option value="Third Semester FYUG">
-  <option value="Fifth Semester FYUG">
-  <option value="Seventh Semester FYUG">
-</datalist>
-
+<!-- ==================== TOP CONTROL BAR ==================== -->
 <div class="toolbar">
-  <div class="brand-box">
-    <div class="brand-icon">🎓</div>
-    <div>
-      <div class="brand-title">
-        <span>University of Calicut</span>
-        <a href="https://in.linkedin.com/in/javidkarathodi" target="_blank" rel="noopener noreferrer" class="designer-badge" style="text-decoration:none;">✨ Designed by Javid Karathodi</a>
-      </div>
-      <span class="brand-sub">FYUGP Interactive Mark Sheet Portal (Original & Duplicate)</span>
-    </div>
+  <div class="toolbar-group">
+    <label>
+      Rate/Script (₹):
+      <input type="number" id="rate_per_script" value="20" oninput="calcAll()" />
+    </label>
+    <label>
+      <input type="checkbox" id="strike_11" checked onchange="toggleStrike()" />
+      Strike-off Sec 11 (QP)
+    </label>
+    <label>
+      <input type="checkbox" id="strike_13" checked onchange="toggleStrike()" />
+      Strike-off Sec 13 (Practical)
+    </label>
   </div>
-
-  <div class="toolbar-controls">
-    <select id="preset-selector" class="exam-preset" onchange="applyExamPreset(this.value)">
-      <option value="First Semester FYUG">First Semester FYUG</option>
-      <option value="Third Semester FYUG">Third Semester FYUG</option>
-      <option value="Fifth Semester FYUG" selected>Fifth Semester FYUG</option>
-      <option value="Seventh Semester FYUG">Seventh Semester FYUG</option>
-    </select>
-    <input type="number" id="toolbar-year" class="year-box" title="Exam Year" min="2024" max="2099" oninput="applyYear(this.value)">
-
-    <div class="view-switcher">
-      <button id="btn-mob" class="active" onclick="switchView('mobile')">📱 Mobile Zoom</button>
-      <button id="btn-a4" onclick="switchView('a4')">📄 A4 Sheet</button>
-    </div>
-
-    <button id="btn-voice" class="voice-btn" onclick="toggleVoice()" title="Reads out entered marks aloud">🔊 Voice: ON</button>
-    <button onclick="triggerPdfUpload()" style="background: linear-gradient(135deg, #f59e0b, #d97706);" title="Upload a previously downloaded Mark Sheet PDF to edit it">📂 Edit Saved PDF</button>
-    <button onclick="downloadPDF()">📥 Download PDF</button>
-    <button class="clear-btn" onclick="clearAll()">🗑️ Clear</button>
-    <input type="file" id="pdfUploadInput" accept=".pdf,application/pdf" style="display:none" onchange="handlePdfUpload(event)">
+  <div class="toolbar-group">
+    <button class="btn btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
+    <button class="btn btn-save" onclick="saveDraft()">💾 Save</button>
+    <button class="btn btn-load" onclick="loadDraft()">📂 Load</button>
+    <button class="btn btn-clear" onclick="clearAll()">🗑️ Clear</button>
   </div>
 </div>
 
-<div id="voiceToast" class="voice-toast">🔊 Speaking: <span id="voiceToastText"></span></div>
-
-<!-- Mobile Easy Entry View -->
-<div id="mobileView" class="mobile-entry-container">
-  <h3 style="margin-top:0; margin-bottom:4px; text-align:center; color:#1e293b;">📱 Mobile Easy Entry Mode</h3>
-  <p style="margin-top:0; margin-bottom:10px; text-align:center; font-size:11.5px; color:#64748b; font-weight:600;">💻 Designed & Developed by <a href="https://in.linkedin.com/in/javidkarathodi" target="_blank" rel="noopener noreferrer" style="color:#2563eb; font-weight:800; text-decoration:underline;">Javid Karathodi</a></p>
-  <div style="margin-bottom: 12px; text-align: center;">
-    <button onclick="triggerPdfUpload()" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; border: none; padding: 9px 16px; border-radius: 8px; font-weight: 800; font-size: 13px; cursor: pointer; width: 100%; box-shadow: 0 3px 8px rgba(245, 158, 11, 0.3);">📂 Edit Previously Downloaded PDF (Upload to Edit)</button>
-  </div>
-  <div class="mobile-meta-grid">
-    <div style="display:flex; gap:8px;">
-      <select id="mob-sem-select" style="flex:1.5;" onchange="applyExamPreset(this.value)">
-        <option value="First Semester FYUG">First Semester FYUG</option>
-        <option value="Third Semester FYUG">Third Semester FYUG</option>
-        <option value="Fifth Semester FYUG" selected>Fifth Semester FYUG</option>
-        <option value="Seventh Semester FYUG">Seventh Semester FYUG</option>
-      </select>
-      <input type="text" id="mob-month-input" style="flex:1; text-align:center;" placeholder="Month" value="November" oninput="syncFromMobileMeta()">
-      <input type="number" id="mob-year-input" style="width:78px; text-align:center;" placeholder="Year" oninput="applyYear(this.value)">
+<!-- ==================== PAGE 1 ==================== -->
+<div class="page">
+  <h1>UNIVERSITY OF CALICUT</h1>
+  <div class="sub-header">
+    REMUNERATION BILL for Setting of Question papers, Valuation of answer papers of<br>
+    Theory/Practical Examinations, Revaluation/Picking out and Despatching of answer papers
+    <div class="exam-line-row">
+      <span>of</span>
+      <input type="text" id="exam_name" class="exam-input" value="FIFTH SEMESTER FYUG EXAMINATION NOVEMBER 2025" placeholder="ENTER EXAMINATION NAME HERE" />
+      <span>Examinations.</span>
     </div>
-    <div style="display:flex; gap:8px;">
-      <input type="text" id="mob-qp" style="flex:1.2;" placeholder="QP Code (e.g. D153559)" oninput="syncFromMobileMeta()">
-      <input type="text" id="mob-date" style="flex:1;" placeholder="Date (DD-MM-YYYY)" oninput="syncFromMobileMeta()">
-      <select id="mob-session" style="width:88px; text-align:center; font-weight:800;" onchange="syncFromMobileMeta()">
-        <option value="FN">FN</option>
-        <option value="AN" selected>AN</option>
-      </select>
-    </div>
-    <input type="text" id="mob-course" placeholder="Course Code & Name" oninput="syncFromMobileMeta()">
   </div>
 
-  <div id="mobile-rows-list"></div>
+  <!-- Personal & Bank Details Table (1 to 10) -->
+  <table class="form-table">
+    <colgroup>
+      <col style="width: 5%" />
+      <col style="width: 47%" />
+      <col style="width: 48%" />
+    </colgroup>
+    <tr>
+      <td class="sl-col">1 a.</td>
+      <td>Name of QP Setter/Examiner/Chief/Chairperson <em>(in block letters)</em></td>
+      <td>
+        <input type="text" id="name" class="bold-upper" style="background:#fefce8" placeholder="ENTER NAME IN BLOCK LETTERS" />
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">b.</td>
+      <td>Calicut University Teacher Unique ID No.</td>
+      <td>
+        <input type="text" id="teacher_id" class="bold-upper" style="background:#fefce8" placeholder="ENTER TEACHER ID" />
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">2 a.</td>
+      <td>
+        <div class="inline-field">
+          <span class="lbl">Designation &amp; Basic Pay :</span>
+          <input type="text" id="designation" class="bold-upper" value="ASSISTANT PROFESSOR" />
+        </div>
+      </td>
+      <td>
+        <strong>b.</strong> Tick whether Govt./Aided/Self Financing :
+        <div style="margin-top:2px; font-size:10.5px">
+          <label style="margin-right:8px"><input type="checkbox" id="col_govt" /> Govt.</label>
+          <label style="margin-right:8px"><input type="checkbox" id="col_aided" /> Aided</label>
+          <label><input type="checkbox" id="col_sf" checked /> Self Financing</label>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">3</td>
+      <td style="vertical-align:top">
+        <div style="display:flex; gap:6px">
+          <span style="white-space:nowrap">Office address :<br><em>(in block<br>letters)</em></span>
+          <textarea id="office_address" rows="2" class="bold-upper" style="background:#fefce8" oninput="autoResize(this)">MIC ARTS AND SCIENCE COLLEGE, ATHANIKKAL</textarea>
+        </div>
+      </td>
+      <td style="vertical-align:top">
+        <div style="display:flex; gap:6px">
+          <span style="white-space:nowrap">Home :<br><em>(in block<br>letters)</em></span>
+          <textarea id="home_address" rows="2" class="bold-upper" style="background:#fefce8" placeholder="ENTER HOME ADDRESS" oninput="autoResize(this)"></textarea>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">4</td>
+      <td>
+        <div class="inline-field">
+          <span class="lbl">Permanent Account Number (PAN) :</span>
+          <input type="text" id="pan" class="bold-upper" maxlength="10" placeholder="ENTER PAN" />
+        </div>
+      </td>
+      <td>
+        <div class="inline-field">
+          <span class="lbl"><strong>5</strong> Mobile Number :</span>
+          <input type="text" id="mobile" class="bold-upper" maxlength="15" placeholder="ENTER MOBILE NO." />
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">6</td>
+      <td>
+        <div class="inline-field">
+          <span class="lbl">E-mail ID :</span>
+          <input type="text" id="email" placeholder="enter email address" style="text-transform:none" />
+        </div>
+      </td>
+      <td>
+        <div class="inline-field">
+          <span class="lbl"><strong>7</strong> Bank A/C Number :</span>
+          <input type="text" id="bank_ac" class="bold-upper" placeholder="ENTER A/C NO." />
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">8</td>
+      <td>
+        <div class="inline-field">
+          <span class="lbl">Name of the Bank and Branch :</span>
+          <input type="text" id="bank_branch" class="bold-upper" placeholder="ENTER BANK & BRANCH" />
+        </div>
+      </td>
+      <td>
+        <div class="inline-field">
+          <span class="lbl"><strong>9</strong> IFS Code :</span>
+          <input type="text" id="ifsc" class="bold-upper" maxlength="11" placeholder="ENTER IFSC" />
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="sl-col">10</td>
+      <td>
+        Name of the disbursing Officer (Treasury Officer in the case of Govt. College Teachers, Principal in the case of Aided College Teachers).
+      </td>
+      <td>
+        <input type="text" id="disbursing_officer" class="bold-upper" style="background:#fefce8" />
+      </td>
+    </tr>
+  </table>
 
-  <!-- Examiner & Bottom Details in Mobile View -->
-  <div class="mobile-meta-grid" style="margin-top: 14px; margin-bottom: 0;">
-    <div style="font-weight: 800; font-size: 13px; color: #1e293b; margin-bottom: 2px;">✍️ Examiner & Session Details</div>
-    <input type="text" id="mob-addl" placeholder="Addl. Examiner Name" oninput="syncFromMobileMeta()">
-    <input type="text" id="mob-chief" placeholder="Chief Examiner Name" oninput="syncFromMobileMeta()">
-    <input type="text" id="mob-chair" placeholder="Chairman Name" oninput="syncFromMobileMeta()">
-    <div style="display:flex; gap:8px; align-items:center;">
-      <div style="flex:1;">
-        <label style="font-size:11px; font-weight:700; color:#475569; display:block; margin-bottom:3px;">Date</label>
-        <input type="text" id="mob-date-bottom" placeholder="DD-MM-YYYY" oninput="syncMobileDateBottom(this.value)">
-      </div>
-      <div style="width:110px;">
-        <label style="font-size:11px; font-weight:700; color:#475569; display:block; margin-bottom:3px;">SESSION</label>
-        <select id="mob-session-bottom" style="font-weight:800;" onchange="syncMobileSessionBottom(this.value)">
-          <option value="FN">FN</option>
-          <option value="AN" selected>AN</option>
-        </select>
-      </div>
+  <!-- Section 11: Setting Question Papers -->
+  <div class="sec-title"><span>* 11 For setting question papers</span></div>
+  <div id="sec11_wrap" class="strike-wrap struck">
+    <table class="grid-table">
+      <tr>
+        <th rowspan="2" style="width:20%">Name of the<br>Programme</th>
+        <th rowspan="2" style="width:30%">Details of Courses and<br>question papers</th>
+        <th rowspan="2" style="width:11%">No. of QP<br>set</th>
+        <th rowspan="2" style="width:13%">No. of<br>answer keys</th>
+        <th colspan="2" style="width:26%">Remuneration (Rs.)</th>
+      </tr>
+      <tr>
+        <th>For QPs</th>
+        <th>For Keys</th>
+      </tr>
+      <tr>
+        <td style="height:24px"><input type="text" id="qp_prog" class="left" /></td>
+        <td><input type="text" id="qp_details" class="left" /></td>
+        <td><input type="text" id="qp_set" /></td>
+        <td><input type="text" id="qp_keys" /></td>
+        <td><input type="number" id="qp_rem_qp" oninput="calcAll()" /></td>
+        <td><input type="number" id="qp_rem_key" oninput="calcAll()" /></td>
+      </tr>
+      <tr>
+        <td colspan="2" style="border-bottom:none"></td>
+        <td colspan="2" style="font-weight:bold">Total</td>
+        <td colspan="2"><input type="text" id="qp_total" readonly /></td>
+      </tr>
+    </table>
+    <div class="words-row">
+      <span>Rs. (in words)</span>
+      <input type="text" id="qp_words" />
     </div>
-    <button onclick="downloadPDF()" style="margin-top:6px; background:linear-gradient(135deg, #2563eb, #1d4ed8); color:#fff; border:none; padding:12px; border-radius:8px; font-weight:800; font-size:14px; cursor:pointer; width:100%; box-shadow:0 4px 10px rgba(37,99,235,0.3);">📥 Download Mark Sheet PDF</button>
+  </div>
+
+  <!-- Section 12: Valuation - UP TO 4 PAPERS -->
+  <div class="sec-title">
+    <span>* 12 For Valuation / Revaluation / Picking out / Despatching of answer scripts</span>
+    <div class="no-print" style="display:flex; align-items:center; gap:6px">
+      <span id="paper_count_lbl" style="font-family:system-ui,sans-serif; font-size:10.5px; color:#2b6cb0">(1 / 4 Papers)</span>
+      <button type="button" id="btn_add_paper" class="btn btn-add" onclick="addValRow()">+ Add Paper (Max 4)</button>
+    </div>
+  </div>
+
+  <table class="grid-table" id="val_papers_table">
+    <thead>
+      <tr>
+        <th rowspan="2" style="width:28%">Name of the<br>Programme/Examination/Paper</th>
+        <th colspan="2" style="width:28%">False No. of answer scripts</th>
+        <th rowspan="2" style="width:18%">Duration of Paper<br>with question<br>paper code</th>
+        <th rowspan="2" style="width:11%">No. of Answer<br>scripts valued<br>(a)</th>
+        <th rowspan="2" style="width:11%">Mandatory minimum<br>No. of answer scripts<br>(b)</th>
+        <th rowspan="2" style="width:4%" class="no-print">Del</th>
+      </tr>
+      <tr>
+        <th style="width:14%">From</th>
+        <th style="width:14%">To</th>
+      </tr>
+    </thead>
+    <tbody id="val_papers_body">
+      <!-- Dynamic Paper Rows (1 to 4) Added Here -->
+    </tbody>
+  </table>
+
+  <!-- Summary remuneration for valuation -->
+  <table class="grid-table" style="margin-top:4px">
+    <tr>
+      <th style="width:20%">Remuneration for<br>(a-b)<br>(P)</th>
+      <th style="width:19%">Remuneration for<br>Discussion<br>(Q)</th>
+      <th style="width:21%">Remuneration for<br>handling of answer<br>scripts<br>(R)</th>
+      <th style="width:21%">No. of answer<br>scripts revalued/<br>picked/despatched<br>(S)</th>
+      <th style="width:19%">Remuneration<br>for 'S'<br>(T)</th>
+    </tr>
+    <tr>
+      <td style="height:26px"><input type="text" id="val_p" oninput="calcManualP()" placeholder="e.g. 56 × 20 = 1120" /></td>
+      <td><input type="number" id="val_q" oninput="calcAll()" /></td>
+      <td><input type="number" id="val_r" oninput="calcAll()" /></td>
+      <td><input type="text" id="val_s" /></td>
+      <td><input type="number" id="val_t" oninput="calcAll()" /></td>
+    </tr>
+    <tr>
+      <td colspan="3" style="text-align:left; padding:3px 6px">
+        Total (P+Q+R) Rs.
+        <input type="text" id="val_total_pqr" style="width:120px; display:inline-block; border-bottom:1px dotted #000" />
+      </td>
+      <td colspan="2" style="text-align:left; padding:3px 6px">
+        Amount (T) Rs.
+        <input type="text" id="val_total_t" style="width:90px; display:inline-block; border-bottom:1px dotted #000" />
+      </td>
+    </tr>
+  </table>
+  <div class="words-row">
+    <span>Total Rupees (in words)</span>
+    <input type="text" id="val_words" />
+  </div>
+
+  <!-- Section 13: Practical / Viva -->
+  <div class="sec-title" style="justify-content:flex-start; gap:6px">
+    <span>* 13 For Practical/Viva Examinations of</span>
+    <input type="text" id="prac_exam" style="width:260px; display:inline-block; border-bottom:1px dotted #000" />
+  </div>
+  <div id="sec13_wrap" class="strike-wrap struck">
+    <table class="grid-table">
+      <tr>
+        <th rowspan="2" style="width:14%">No. of Batches<br>(prescribing<br>work)</th>
+        <th colspan="2" style="width:20%">No. of Candidates</th>
+        <th colspan="5" style="width:66%">Remuneration for</th>
+      </tr>
+      <tr>
+        <th style="width:10%">Registered</th>
+        <th style="width:10%">Present</th>
+        <th style="width:12%">Prescribing<br>work (P)</th>
+        <th style="width:12%">Preparing<br>work (Q)</th>
+        <th style="width:12%">Conducting<br>work (R)</th>
+        <th style="width:17%">Remuneration for<br>valuation of practicals<br>if any (S)</th>
+        <th style="width:13%">Conduct of<br>Viva if any<br>(T)</th>
+      </tr>
+      <tr>
+        <td style="height:24px"><input type="text" id="prac_batch" /></td>
+        <td><input type="text" id="prac_reg" /></td>
+        <td><input type="text" id="prac_pres" /></td>
+        <td><input type="number" id="prac_p" oninput="calcAll()" /></td>
+        <td><input type="number" id="prac_q" oninput="calcAll()" /></td>
+        <td><input type="number" id="prac_r" oninput="calcAll()" /></td>
+        <td><input type="number" id="prac_s" oninput="calcAll()" /></td>
+        <td><input type="number" id="prac_t" oninput="calcAll()" /></td>
+      </tr>
+      <tr>
+        <td colspan="3"></td>
+        <td colspan="3" style="font-weight:bold">Total (P+Q+R+S+T)</td>
+        <td colspan="2" style="text-align:left">
+          Rs. <input type="text" id="prac_total" style="width:78%; display:inline-block" readonly />
+        </td>
+      </tr>
+    </table>
+    <div class="words-row">
+      <span>Rupees (in words)</span>
+      <input type="text" id="prac_words" />
+    </div>
+  </div>
+
+  <!-- Grand Total & Footer -->
+  <div class="grand-row">
+    <span>Grand Total of Theory &amp; Practical Rs.</span>
+    <input type="text" id="grand_total" />
+  </div>
+  <div class="footer-note">
+    <span>* Strike off whichever is not applicable</span>
+    <span>P.T.O</span>
   </div>
 </div>
 
-<!-- A4 Side-by-Side View -->
-<div id="a4View" class="a4-sheet">
-  <!-- ORIGINAL COLUMN -->
-  <div class="column" id="col-orig">
-    <div class="top-block">
-      <div class="header-top">
-        <div class="qp-box">
-          <span>QP CODE :</span>
-          <input type="text" id="qp-orig" class="qp-input" value="" oninput="syncMeta('qp', this.value)">
-        </div>
-        <span>ORIGINAL</span>
-      </div>
-      <div class="uni-title">UNIVERSITY OF CALICUT</div>
-      <div class="mark-sheet-title">MARK SHEET</div>
+<!-- ==================== PAGE 2 ==================== -->
+<div class="page">
+  <div class="sec-title"><span>14 &nbsp;&nbsp; Name &amp; Signature of :</span></div>
+  <table class="sig-box-table">
+    <tr>
+      <td>
+        <input type="text" id="sig_chair" />
+        <div>Chairperson</div>
+      </td>
+      <td>
+        <input type="text" id="sig_chief" />
+        <div>Chief Examiner</div>
+      </td>
+      <td>
+        <input type="text" id="sig_add" />
+        <div>Additional Examiner</div>
+      </td>
+      <td>
+        <input type="text" id="sig_qp" />
+        <div>QP Setter</div>
+      </td>
+    </tr>
+  </table>
 
-      <div class="meta-row">
-        <input type="text" id="sem-orig" class="sem-input" list="exam-presets" value="Fifth Semester FYUG" oninput="syncMeta('sem', this.value)">
-        <span>Examination</span>
-        <input type="text" id="exam-month-orig" class="month-input" value="November" oninput="syncMeta('examMonth', this.value)">
-        <span>20</span>
-        <input type="text" id="exam-yr-orig" class="yr-input" value="26" oninput="syncMeta('examYr', this.value)">
+  <div class="cert-section">
+    <h3>CERTIFICATE</h3>
+    <p>
+      Certified that the amount in this bill has not been claimed previously and it is paid to me provisionally and I shall
+      refund to the University any amount received which is subsequently disallowed by audit.
+    </p>
+    <div class="cert-layout">
+      <div class="cert-left-spacer"></div>
+      <div class="cert-mid-sign">
+        <input type="text" id="cert_name_sign" />
+        <div>Contents received</div>
+        <div>Signature of the Examiner/Chief/Chairperson/QP Setter with date</div>
       </div>
-      <div class="course-row">
-        <span>Course</span>
-        <input type="text" id="course-orig" class="course-input" value="" oninput="syncMeta('course', this.value)">
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th rowspan="2" style="width: 38%;">Register Number</th>
-            <th colspan="2">Marks</th>
-          </tr>
-          <tr>
-            <th style="width: 22%;">Figures</th>
-            <th style="width: 40%;">in words</th>
-          </tr>
-        </thead>
-        <tbody id="tbody-orig"></tbody>
-        <tfoot>
-          <tr class="total-row">
-            <td>TOTAL</td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-
-    <div class="bottom-block">
-      <div class="signature-section">
-        <div class="sig-header">
-          <span>Name</span>
-          <span>Signature</span>
-        </div>
-        <div class="sig-row">
-          <span class="sig-label">Addl. Examiner</span><span class="sig-colon">:</span>
-          <input type="text" id="addl-orig" value="" oninput="syncMeta('addl', this.value)">
-        </div>
-        <div class="sig-row">
-          <span class="sig-label">Chief Examiner</span><span class="sig-colon">:</span>
-          <input type="text" id="chief-orig" value="" oninput="syncMeta('chief', this.value)">
-        </div>
-        <div class="sig-row">
-          <span class="sig-label">Chairman</span><span class="sig-colon">:</span>
-          <input type="text" id="chair-orig" value="" oninput="syncMeta('chair', this.value)">
-        </div>
-      </div>
-
-      <div class="bottom-date-row">
-        <div><span>Date :</span> <input type="text" id="date-orig" value="" oninput="syncMeta('date', this.value)"></div>
-        <div><span>SESSION :</span> 
-          <select id="session-orig" class="session-select" onchange="syncMeta('session', this.value)">
-            <option value="FN">FN</option>
-            <option value="AN" selected>AN</option>
-          </select>
-        </div>
+      <div class="stamp-box">
+        Affix Revenue<br>Stamp for<br>Claims<br>exceeding<br>Rs. 5000/-
       </div>
     </div>
   </div>
 
-  <!-- DUPLICATE COLUMN -->
-  <div class="column" id="col-dup">
-    <div class="top-block">
-      <div class="header-top">
-        <div class="qp-box">
-          <span>QP CODE :</span>
-          <input type="text" id="qp-dup" class="qp-input" readonly>
-        </div>
-        <span>DUPLICATE</span>
-      </div>
-      <div class="uni-title">UNIVERSITY OF CALICUT</div>
-      <div class="mark-sheet-title">MARK SHEET</div>
-
-      <div class="meta-row">
-        <input type="text" id="sem-dup" class="sem-input" readonly>
-        <span>Examination</span>
-        <input type="text" id="exam-month-dup" class="month-input" readonly>
-        <span>20</span>
-        <input type="text" id="exam-yr-dup" class="yr-input" readonly>
-      </div>
-      <div class="course-row">
-        <span>Course</span>
-        <input type="text" id="course-dup" class="course-input" readonly>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th rowspan="2" style="width: 38%;">Register Number</th>
-            <th colspan="2">Marks</th>
-          </tr>
-          <tr>
-            <th style="width: 22%;">Figures</th>
-            <th style="width: 40%;">in words</th>
-          </tr>
-        </thead>
-        <tbody id="tbody-dup"></tbody>
-        <tfoot>
-          <tr class="total-row">
-            <td>TOTAL</td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tfoot>
-      </table>
+  <!-- For Office Use Only (Separate Box 1) -->
+  <div class="office-box">
+    <div class="office-title">FOR OFFICE USE ONLY (Pareeksha Bhavan)</div>
+    <div class="office-line">
+      1. Received <input type="text" class="dotted-inline" /> QPs /
+      <input type="text" class="dotted-inline" /> Answer Keys / Mark sheets of
+      <input type="text" class="dotted-inline" style="width:110px !important" /> Answerscripts
     </div>
-
-    <div class="bottom-block">
-      <div class="signature-section">
-        <div class="sig-header">
-          <span>Name</span>
-          <span>Signature</span>
-        </div>
-        <div class="sig-row">
-          <span class="sig-label">Addl. Examiner</span><span class="sig-colon">:</span>
-          <input type="text" id="addl-dup" readonly>
-        </div>
-        <div class="sig-row">
-          <span class="sig-label">Chief Examiner</span><span class="sig-colon">:</span>
-          <input type="text" id="chief-dup" readonly>
-        </div>
-        <div class="sig-row">
-          <span class="sig-label">Chairman</span><span class="sig-colon">:</span>
-          <input type="text" id="chair-dup" readonly>
-        </div>
-      </div>
-
-      <div class="bottom-date-row">
-        <div><span>Date :</span> <input type="text" id="date-dup" readonly></div>
-        <div><span>SESSION :</span> 
-          <select id="session-dup" class="session-select" disabled>
-            <option value="FN">FN</option>
-            <option value="AN">AN</option>
-          </select>
-        </div>
-      </div>
+    <div class="office-line">
+      2. No. of Answerscripts revalued / picked /despatched
+      <input type="text" class="dotted-inline" style="width:270px !important" />
     </div>
+    <div class="office-sign-block">
+      <div>Signature of SO/AR/JCE with date :</div>
+      <div style="margin-left:36%">Designation :</div>
+    </div>
+  </div>
+
+  <!-- Pre-Audit & Payment Table (Separate Box 2) -->
+  <table class="audit-table">
+    <tr>
+      <td>
+        <div class="audit-head">Pre-audit / Payment by Finance Branch</div>
+        <div>Rs. <input type="text" class="dotted-inline" style="width:86% !important" /></div>
+        <div>(Rupees <input type="text" class="dotted-inline" style="width:78% !important" /></div>
+        <div><input type="text" class="dotted-inline" style="width:88% !important" /> only)</div>
+        <div style="margin-top:4px">found admissible and passed for payment / paid.</div>
+      </td>
+      <td>
+        <div class="audit-head">Payment by Pareeksha Bhavan to QP Setters</div>
+        <div style="margin-top:6px">Paid the amount passed for payment</div>
+      </td>
+    </tr>
+    <tr class="audit-officers">
+      <td>
+        <div class="officer-flex">
+          <span>Asst.</span>
+          <span>S.O.</span>
+          <span>AR/DR/JR/FO</span>
+        </div>
+      </td>
+      <td>
+        <div class="officer-flex">
+          <span>Asst.</span>
+          <span>S.O.</span>
+          <span>AR/DR/JR/FO</span>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Official Instructions -->
+  <div class="inst-section">
+    <h4>Important instructions to Examiners / Chief / Chairpersons / QP Setters</h4>
+    <ol>
+      <li>The teachers drawing UGC scale of pay shall value the mandatory number of answerscripts as part of duty without any remuneration.</li>
+      <li>The examiners are not eligible for reimbursement of any expenses with respect to the picking out and despatching of answerscripts over and above the remuneration fixed.</li>
+      <li>Examiners are eligible for TA/DA for attending CV Camps as per rules.</li>
+      <li>Revenue stamp is to be affixed in the bill when the total amount exceeds Rs. 5000/-</li>
+      <li>The remuneration will be sanctioned by the University and credited directly to the Bank Account mentioned in the bill.</li>
+      <li>The Payment of remuneration by this office is an income for the purpose of income tax. This may be included in the taxable income while computing annual income during the financial year.</li>
+      <li>For further details Examiners are requested to refer the University Orders issued from time to time.</li>
+    </ol>
+
+    <h4>Additional instructions to QP Setters</h4>
+    <ol>
+      <li>The Chairman of Board of QP Setters may claim 'Chairman's Fee', Postage and Stationery charges (enclosing signed vouchers), etc., in his bill.</li>
+      <li>All Question paper setters should forward their remuneration bills to the Controller of Examinations through the Chairperson, as soon as the QP setting work is over.</li>
+      <li>All remuneration bills must bear the signature of the Chairperson. If there is no separate Chairperson, the fact may be noted in the space provided for the signature of the Chairperson.</li>
+      <li>The Chairperson must forward all the remuneration bills of the QP setting Board in one lot within one month positively.</li>
+    </ol>
+    <div style="margin-top:8px; font-size:9px">CUP 740/18/50,000</div>
   </div>
 </div>
 
-<!-- Attractive Credit Footer on the Web Page (Not printed on the official A4 PDF) -->
-<div class="developer-footer">
-  <span>💻 Designed & Developed by <a href="https://in.linkedin.com/in/javidkarathodi" target="_blank" rel="noopener noreferrer" class="dev-name" style="text-decoration:none; border-bottom: 1px dashed #38bdf8;">Javid Karathodi</a></span>
+<div class="dev-footer">
+  Developed by Javid Karathodi | MIC Arts &amp; Science College, Athanikkal, Valluvambram
 </div>
 
 <script>
-  const numRows = 25;
-  let voiceEnabled = true;
-  let speechTimer = null;
-  let audioCtx = null;
-
-  const measureCanvas = document.createElement('canvas');
-  const measureCtx = measureCanvas.getContext('2d');
-
-  // Soft confirmation beep + Clear Voice Speech Synthesis when a mark is entered
-  function playKeyBeep() {
-    if (!voiceEnabled) return;
-    try {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(660, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.06);
-    } catch (e) {}
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = (el.scrollHeight) + 'px';
   }
 
-  function speakEnteredMark(val, wordsStr) {
-    if (!voiceEnabled || !val) return;
-    playKeyBeep();
-    if (speechTimer) clearTimeout(speechTimer);
-    speechTimer = setTimeout(() => {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(`${val}`);
-        utter.lang = 'en-IN';
-        utter.rate = 1.05;
-        utter.pitch = 1.0;
-        window.speechSynthesis.speak(utter);
+  // ========== Number to Words (Indian system) ==========
+  function numberToWords(num) {
+    num = Math.floor(Math.abs(Number(num) || 0));
+    if (num === 0) return 'ZERO ONLY';
+    const ones = ['','ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE','TEN',
+      'ELEVEN','TWELVE','THIRTEEN','FOURTEEN','FIFTEEN','SIXTEEN','SEVENTEEN','EIGHTEEN','NINETEEN'];
+    const tens = ['','','TWENTY','THIRTY','FORTY','FIFTY','SIXTY','SEVENTY','EIGHTY','NINETY'];
+    function upTo99(x) {
+      if (x < 20) return ones[x];
+      return tens[Math.floor(x/10)] + (x % 10 ? ' ' + ones[x % 10] : '');
+    }
+    function upTo999(x) {
+      if (x < 100) return upTo99(x);
+      return ones[Math.floor(x/100)] + ' HUNDRED' + (x % 100 ? ' AND ' + upTo99(x % 100) : '');
+    }
+    let str = '';
+    const crore = Math.floor(num / 10000000); num %= 10000000;
+    const lakh  = Math.floor(num / 100000);   num %= 100000;
+    const th    = Math.floor(num / 1000);     num %= 1000;
+    if (crore) str += upTo99(crore) + ' CRORE ';
+    if (lakh)  str += upTo99(lakh)  + ' LAKH ';
+    if (th)    str += upTo999(th)   + ' THOUSAND ';
+    if (num)   str += upTo999(num);
+    return str.trim() + ' ONLY';
+  }
 
-        const toast = document.getElementById('voiceToast');
-        const toastText = document.getElementById('voiceToastText');
-        toastText.textContent = `${val} (${wordsStr})`;
-        toast.style.display = 'flex';
-        setTimeout(() => { toast.style.display = 'none'; }, 1600);
+  function extractNum(val) {
+    if (val === null || val === undefined || val === '') return 0;
+    const s = String(val);
+    if (s.includes('=')) return parseFloat(s.split('=').pop()) || 0;
+    return parseFloat(s) || 0;
+  }
+
+  function getRate() {
+    return parseFloat(document.getElementById('rate_per_script').value) || 20;
+  }
+
+  // ---------- Multi-paper valuation (1 to 4 Papers) ----------
+  let valRowCount = 0;
+  const MAX_VAL_ROWS = 4;
+
+  function updatePaperCounterUI() {
+    const lbl = document.getElementById('paper_count_lbl');
+    const btn = document.getElementById('btn_add_paper');
+    if (lbl) lbl.textContent = `(${valRowCount} / ${MAX_VAL_ROWS} Papers)`;
+    if (btn) btn.disabled = (valRowCount >= MAX_VAL_ROWS);
+  }
+
+  function createValRow(index) {
+    const tr = document.createElement('tr');
+    tr.className = 'val-paper-row';
+    tr.dataset.index = index;
+    tr.innerHTML = `
+      <td><textarea class="val_paper bold-upper left" rows="1" oninput="autoResize(this)" placeholder="Enter Paper Code & Name"></textarea></td>
+      <td><textarea class="val_from bold-upper" rows="1" oninput="autoResize(this)" placeholder="From Reg No"></textarea></td>
+      <td><textarea class="val_to bold-upper" rows="1" oninput="autoResize(this)" placeholder="To Reg No"></textarea></td>
+      <td><textarea class="val_qpcode bold-upper" rows="1" oninput="autoResize(this)" placeholder="QP Code & Hrs"></textarea></td>
+      <td><input type="number" class="val_a" min="0" oninput="calcAll()" placeholder="0" /></td>
+      <td><input type="number" class="val_b" min="0" oninput="calcAll()" /></td>
+      <td class="no-print"><button type="button" class="btn btn-clear" style="padding:2px 6px; font-size:10px" onclick="removeValRow(this)" title="Remove Paper">✕</button></td>
+    `;
+    return tr;
+  }
+
+  function addValRow() {
+    if (valRowCount >= MAX_VAL_ROWS) {
+      alert('Maximum ' + MAX_VAL_ROWS + ' papers can be added.');
+      return;
+    }
+    const tbody = document.getElementById('val_papers_body');
+    const tr = createValRow(valRowCount);
+    tbody.appendChild(tr);
+    valRowCount++;
+    updatePaperCounterUI();
+  }
+
+  function removeValRow(btn) {
+    const tbody = document.getElementById('val_papers_body');
+    if (tbody.querySelectorAll('tr').length <= 1) {
+      alert('At least 1 paper row is required.');
+      return;
+    }
+    const tr = btn.closest('tr');
+    tr.remove();
+    valRowCount--;
+    updatePaperCounterUI();
+    calcAll();
+  }
+
+  function getAllValPapers() {
+    const rows = document.querySelectorAll('#val_papers_body tr');
+    const papers = [];
+    rows.forEach(tr => {
+      const a = parseFloat(tr.querySelector('.val_a')?.value) || 0;
+      const b = parseFloat(tr.querySelector('.val_b')?.value) || 0;
+      papers.push({ a, b, payable: Math.max(0, a - b) });
+    });
+    return papers;
+  }
+
+  function calcAll() {
+    const rate = getRate();
+    const papers = getAllValPapers();
+
+    let totalPayableScripts = 0;
+    papers.forEach(p => { totalPayableScripts += p.payable; });
+    const totalP = totalPayableScripts * rate;
+
+    if (totalPayableScripts > 0) {
+      document.getElementById('val_p').value = totalPayableScripts + ' × ' + rate + ' = ' + totalP;
+    } else if (document.getElementById('val_p').value.includes('×')) {
+      document.getElementById('val_p').value = '';
+    }
+
+    // QP total
+    const qp1 = extractNum(document.getElementById('qp_rem_qp').value);
+    const qp2 = extractNum(document.getElementById('qp_rem_key').value);
+    const qpTot = qp1 + qp2;
+    document.getElementById('qp_total').value = qpTot || '';
+    document.getElementById('qp_words').value = qpTot ? numberToWords(qpTot) : '';
+
+    // Valuation totals
+    const p = extractNum(document.getElementById('val_p').value);
+    const q = extractNum(document.getElementById('val_q').value);
+    const r = extractNum(document.getElementById('val_r').value);
+    const t = extractNum(document.getElementById('val_t').value);
+    const pqr = p + q + r;
+    document.getElementById('val_total_pqr').value = pqr ? pqr + '/-' : '';
+    document.getElementById('val_total_t').value = t ? t + '/-' : '';
+    document.getElementById('val_words').value = (pqr + t) ? numberToWords(pqr + t) : '';
+
+    // Practical total
+    const pp = extractNum(document.getElementById('prac_p').value);
+    const pq = extractNum(document.getElementById('prac_q').value);
+    const pr = extractNum(document.getElementById('prac_r').value);
+    const ps = extractNum(document.getElementById('prac_s').value);
+    const pt = extractNum(document.getElementById('prac_t').value);
+    const pracTot = pp + pq + pr + ps + pt;
+    document.getElementById('prac_total').value = pracTot || '';
+    document.getElementById('prac_words').value = pracTot ? numberToWords(pracTot) : '';
+
+    // Grand total
+    const grand = qpTot + pqr + t + pracTot;
+    document.getElementById('grand_total').value = grand ? grand + '/-' : '';
+  }
+
+  function calcManualP() {
+    const p = extractNum(document.getElementById('val_p').value);
+    const q = extractNum(document.getElementById('val_q').value);
+    const r = extractNum(document.getElementById('val_r').value);
+    const t = extractNum(document.getElementById('val_t').value);
+    const pqr = p + q + r;
+    document.getElementById('val_total_pqr').value = pqr ? pqr + '/-' : '';
+    document.getElementById('val_total_t').value = t ? t + '/-' : '';
+    document.getElementById('val_words').value = (pqr + t) ? numberToWords(pqr + t) : '';
+
+    const qpTot = extractNum(document.getElementById('qp_total').value);
+    const pracTot = extractNum(document.getElementById('prac_total').value);
+    const grand = qpTot + pqr + t + pracTot;
+    document.getElementById('grand_total').value = grand ? grand + '/-' : '';
+  }
+
+  function toggleStrike() {
+    document.getElementById('sec11_wrap').classList.toggle('struck', document.getElementById('strike_11').checked);
+    document.getElementById('sec13_wrap').classList.toggle('struck', document.getElementById('strike_13').checked);
+  }
+
+  function saveDraft() {
+    const data = {};
+    document.querySelectorAll('input, textarea').forEach(el => {
+      const key = el.id || el.name;
+      if (!key) return;
+      if (el.type === 'checkbox') data[key] = el.checked;
+      else data[key] = el.value;
+    });
+
+    const papers = [];
+    document.querySelectorAll('#val_papers_body tr').forEach(tr => {
+      papers.push({
+        paper: tr.querySelector('.val_paper') ? tr.querySelector('.val_paper').value : '',
+        from: tr.querySelector('.val_from') ? tr.querySelector('.val_from').value : '',
+        to: tr.querySelector('.val_to') ? tr.querySelector('.val_to').value : '',
+        qpcode: tr.querySelector('.val_qpcode') ? tr.querySelector('.val_qpcode').value : '',
+        a: tr.querySelector('.val_a') ? tr.querySelector('.val_a').value : '',
+        b: tr.querySelector('.val_b') ? tr.querySelector('.val_b').value : ''
+      });
+    });
+    data._val_papers = papers;
+
+    localStorage.setItem('calicutRemBill', JSON.stringify(data));
+    alert('Draft saved in this browser.');
+  }
+
+  function loadDraft() {
+    const raw = localStorage.getItem('calicutRemBill');
+    if (!raw) { alert('No saved draft found.'); return; }
+    const data = JSON.parse(raw);
+
+    document.getElementById('val_papers_body').innerHTML = '';
+    valRowCount = 0;
+
+    if (data._val_papers && Array.isArray(data._val_papers)) {
+      data._val_papers.slice(0, MAX_VAL_ROWS).forEach(p => {
+        addValRow();
+        const tr = document.querySelector('#val_papers_body tr:last-child');
+        if (tr) {
+          const pEl = tr.querySelector('.val_paper');
+          const fromEl = tr.querySelector('.val_from');
+          const toEl = tr.querySelector('.val_to');
+          const qEl = tr.querySelector('.val_qpcode');
+          const aEl = tr.querySelector('.val_a');
+          const bEl = tr.querySelector('.val_b');
+          if (pEl) { pEl.value = p.paper || ''; autoResize(pEl); }
+          if (fromEl) { fromEl.value = p.from || ''; autoResize(fromEl); }
+          if (toEl) { toEl.value = p.to || ''; autoResize(toEl); }
+          if (qEl) { qEl.value = p.qpcode || ''; autoResize(qEl); }
+          if (aEl) aEl.value = p.a || '';
+          if (bEl) bEl.value = p.b || '';
+        }
+      });
+    }
+
+    document.querySelectorAll('input, textarea').forEach(el => {
+      const key = el.id || el.name;
+      if (!(key in data) || key.startsWith('_')) return;
+      if (el.type === 'checkbox') el.checked = !!data[key];
+      else {
+        el.value = data[key];
+        if (el.tagName === 'TEXTAREA') autoResize(el);
       }
-    }, 320);
-  }
+    });
 
-  function toggleVoice() {
-    voiceEnabled = !voiceEnabled;
-    const btn = document.getElementById('btn-voice');
-    if (voiceEnabled) {
-      btn.textContent = '🔊 Voice: ON';
-      btn.classList.remove('muted');
-      speakEnteredMark('Voice On', 'ENABLED');
-    } else {
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-      btn.textContent = '🔇 Voice: OFF';
-      btn.classList.add('muted');
-    }
-  }
+    if (valRowCount === 0) addValRow();
 
-  // Dynamic font-size scaler so long Course names or Semester names never get cut off
-  function autoFitInput(inputEl, maxFontPt = 10.2, minFontPt = 6.2) {
-    if (!inputEl) return;
-    const val = inputEl.value || '';
-    const availWidth = (inputEl.clientWidth || 265) - 6;
-    let size = maxFontPt;
-    while (size > minFontPt) {
-      measureCtx.font = `bold ${size}px Arial, Helvetica, sans-serif`;
-      if (measureCtx.measureText(val).width <= availWidth) break;
-      size -= 0.25;
-    }
-    inputEl.style.fontSize = size + 'px';
-  }
-
-  function fitAllHeaders() {
-    autoFitInput(document.getElementById('sem-orig'), 10.5, 7);
-    autoFitInput(document.getElementById('sem-dup'), 10.5, 7);
-    autoFitInput(document.getElementById('course-orig'), 10, 6.2);
-    autoFitInput(document.getElementById('course-dup'), 10, 6.2);
-  }
-
-  function applyExamPreset(semText) {
-    document.getElementById('sem-orig').value = semText;
-    document.getElementById('sem-dup').value = semText;
-    document.getElementById('preset-selector').value = semText;
-    document.getElementById('mob-sem-select').value = semText;
-    fitAllHeaders();
-  }
-
-  function applyYear(fullYearStr) {
-    let yrStr = String(fullYearStr).trim();
-    let shortYr = yrStr.length === 4 ? yrStr.slice(2) : yrStr.slice(-2);
-    document.getElementById('exam-yr-orig').value = shortYr;
-    document.getElementById('exam-yr-dup').value = shortYr;
-    document.getElementById('toolbar-year').value = yrStr.length === 2 ? '20' + yrStr : yrStr;
-    document.getElementById('mob-year-input').value = yrStr.length === 2 ? '20' + yrStr : yrStr;
-  }
-
-  function numberToWords(val) {
-    if (val === "" || val === null || isNaN(val)) return "";
-    const clean = val.trim();
-    if (clean === "") return "";
-    const digits = ["ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE"];
-    return clean.split('').map(d => digits[parseInt(d, 10)] || '').join(' ').trim();
-  }
-
-  function initTables() {
-    let tbodyOrig = document.getElementById('tbody-orig');
-    let tbodyDup = document.getElementById('tbody-dup');
-    let mobList = document.getElementById('mobile-rows-list');
-    
-    tbodyOrig.innerHTML = "";
-    tbodyDup.innerHTML = "";
-    mobList.innerHTML = "";
-
-    for (let i = 1; i <= numRows; i++) {
-      let trO = document.createElement('tr');
-      trO.innerHTML = `
-        <td><input type="text" class="reg-input" id="orig-reg-${i}" onfocus="autoFillRegPrefix(${i}, 'orig')" onclick="autoFillRegPrefix(${i}, 'orig')" oninput="syncRow(${i}, 'reg', this.value)" onpaste="handleRegPaste(event, ${i})" onkeydown="handleEnterNav(event, ${i}, 'reg')"></td>
-        <td><input type="text" inputmode="numeric" class="fig-input" id="orig-fig-${i}" oninput="syncRow(${i}, 'fig', this.value)" onkeydown="handleEnterNav(event, ${i}, 'fig')"></td>
-        <td><input type="text" class="words-input" id="orig-words-${i}" readonly tabindex="-1"></td>
-      `;
-      tbodyOrig.appendChild(trO);
-
-      let trD = document.createElement('tr');
-      trD.innerHTML = `
-        <td><input type="text" class="reg-input" id="dup-reg-${i}" readonly tabindex="-1"></td>
-        <td><input type="text" class="fig-input" id="dup-fig-${i}" readonly tabindex="-1"></td>
-        <td><input type="text" class="words-input" id="dup-words-${i}" readonly tabindex="-1"></td>
-      `;
-      tbodyDup.appendChild(trD);
-
-      let mobRow = document.createElement('div');
-      mobRow.className = 'mobile-row';
-      mobRow.innerHTML = `
-        <span>${i}</span>
-        <input type="text" class="mob-reg" id="mob-reg-${i}" placeholder="Reg No" onfocus="autoFillRegPrefix(${i}, 'mob')" onclick="autoFillRegPrefix(${i}, 'mob')" oninput="updateFromMobile(${i}, 'reg', this.value)" onpaste="handleRegPaste(event, ${i})" onkeydown="handleMobileEnterNav(event, ${i}, 'reg')">
-        <input type="text" inputmode="numeric" class="mob-mark" id="mob-fig-${i}" placeholder="Mark" oninput="updateFromMobile(${i}, 'fig', this.value)" onkeydown="handleMobileEnterNav(event, ${i}, 'fig')">
-        <div class="mob-words" id="mob-words-${i}"></div>
-      `;
-      mobList.appendChild(mobRow);
-    }
-  }
-
-  // Extract first 5 characters (e.g. VUAZA from VUAZAEC002 or VUBAB from VUBABCM001)
-  function extractCommonPrefix(regStr) {
-    if (!regStr) return "";
-    let clean = regStr.trim().toUpperCase();
-    if (clean.length < 5) return "";
-    return clean.substring(0, 5);
-  }
-
-  function autoFillRegPrefix(rowIdx, source) {
-    if (rowIdx <= 1) return;
-    let currOrig = document.getElementById(`orig-reg-${rowIdx}`);
-    let currMob = document.getElementById(`mob-reg-${rowIdx}`);
-    if (currOrig && currOrig.value.trim() !== "") return;
-
-    let prevVal = "";
-    for (let k = rowIdx - 1; k >= 1; k--) {
-      let p = document.getElementById(`orig-reg-${k}`).value.trim();
-      if (p.length >= 5) {
-        prevVal = p;
-        break;
-      }
-    }
-    if (!prevVal) return;
-
-    let prefix = extractCommonPrefix(prevVal);
-    if (!prefix) return;
-
-    document.getElementById(`orig-reg-${rowIdx}`).value = prefix;
-    document.getElementById(`dup-reg-${rowIdx}`).value = prefix;
-    if (currMob) currMob.value = prefix;
-
-    let activeEl = source === 'mob' ? currMob : currOrig;
-    if (activeEl) {
-      setTimeout(() => {
-        activeEl.setSelectionRange(prefix.length, prefix.length);
-      }, 15);
-    }
-  }
-
-  function handleMobileEnterNav(e, rowIdx, colType) {
-    if (e.key === 'Enter' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      const nextIdx = rowIdx < numRows ? rowIdx + 1 : 1;
-      const nextEl = document.getElementById(`mob-${colType}-${nextIdx}`);
-      if (nextEl) nextEl.focus();
-    } else if (e.key === 'ArrowUp' && rowIdx > 1) {
-      e.preventDefault();
-      const prevEl = document.getElementById(`mob-${colType}-${rowIdx - 1}`);
-      if (prevEl) prevEl.focus();
-    }
-  }
-
-  function handleRegPaste(e, startRow) {
-    let pastedText = (e.clipboardData || window.clipboardData).getData('text');
-    if (!pastedText || (!pastedText.includes('\n') && !pastedText.includes('\t'))) return;
-    e.preventDefault();
-    let lines = pastedText.split(/\s+/).map(s => s.trim()).filter(s => s.length > 0);
-    let currentRow = startRow;
-    for (let item of lines) {
-      if (currentRow > numRows) break;
-      syncRow(currentRow, 'reg', item);
-      currentRow++;
-    }
-  }
-
-  // Smooth Enter / Arrow key navigation down columns
-  function handleEnterNav(e, rowIdx, colType) {
-    if (e.key === 'Enter' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      const nextIdx = rowIdx < numRows ? rowIdx + 1 : 1;
-      const nextEl = document.getElementById(`orig-${colType}-${nextIdx}`);
-      if (nextEl) nextEl.focus();
-    } else if (e.key === 'ArrowUp' && rowIdx > 1) {
-      e.preventDefault();
-      const prevEl = document.getElementById(`orig-${colType}-${rowIdx - 1}`);
-      if (prevEl) prevEl.focus();
-    }
-  }
-
-  function syncRow(rowIdx, type, val) {
-    if (type === 'fig') {
-      val = val.replace(/[^0-9]/g, '');
-      document.getElementById(`orig-fig-${rowIdx}`).value = val;
-      let words = numberToWords(val);
-      document.getElementById(`orig-words-${rowIdx}`).value = words;
-      document.getElementById(`dup-fig-${rowIdx}`).value = val;
-      document.getElementById(`dup-words-${rowIdx}`).value = words;
-
-      let mobFig = document.getElementById(`mob-fig-${rowIdx}`);
-      if (mobFig) mobFig.value = val;
-      let mobW = document.getElementById(`mob-words-${rowIdx}`);
-      if (mobW) mobW.innerText = words;
-
-      if (val !== "") speakEnteredMark(val, words);
-    } else if (type === 'reg') {
-      val = val.toUpperCase();
-      document.getElementById(`orig-reg-${rowIdx}`).value = val;
-      document.getElementById(`dup-reg-${rowIdx}`).value = val;
-      let mobReg = document.getElementById(`mob-reg-${rowIdx}`);
-      if (mobReg) mobReg.value = val;
-    }
-  }
-
-  function updateFromMobile(rowIdx, type, val) {
-    if (type === 'fig') {
-      val = val.replace(/[^0-9]/g, '');
-      document.getElementById(`mob-fig-${rowIdx}`).value = val;
-      document.getElementById(`orig-fig-${rowIdx}`).value = val;
-      let words = numberToWords(val);
-      document.getElementById(`orig-words-${rowIdx}`).value = words;
-      document.getElementById(`dup-fig-${rowIdx}`).value = val;
-      document.getElementById(`dup-words-${rowIdx}`).value = words;
-      document.getElementById(`mob-words-${rowIdx}`).innerText = words;
-
-      if (val !== "") speakEnteredMark(val, words);
-    } else if (type === 'reg') {
-      val = val.toUpperCase();
-      document.getElementById(`mob-reg-${rowIdx}`).value = val;
-      document.getElementById(`orig-reg-${rowIdx}`).value = val;
-      document.getElementById(`dup-reg-${rowIdx}`).value = val;
-    }
-  }
-
-  function syncMeta(field, val) {
-    if (field === 'qp') {
-      document.getElementById('qp-dup').value = val;
-      document.getElementById('mob-qp').value = val;
-    } else if (field === 'sem') {
-      document.getElementById('sem-dup').value = val;
-      fitAllHeaders();
-    } else if (field === 'examMonth') {
-      document.getElementById('exam-month-dup').value = val;
-      document.getElementById('mob-month-input').value = val;
-    } else if (field === 'examYr') {
-      document.getElementById('exam-yr-dup').value = val;
-      if (val.length === 2) {
-        document.getElementById('toolbar-year').value = '20' + val;
-        document.getElementById('mob-year-input').value = '20' + val;
-      }
-    } else if (field === 'course') {
-      document.getElementById('course-dup').value = val;
-      document.getElementById('mob-course').value = val;
-      fitAllHeaders();
-    } else if (field === 'addl') {
-      document.getElementById('addl-dup').value = val;
-      document.getElementById('mob-addl').value = val;
-    } else if (field === 'chief') {
-      document.getElementById('chief-dup').value = val;
-      document.getElementById('mob-chief').value = val;
-    } else if (field === 'chair') {
-      document.getElementById('chair-dup').value = val;
-      document.getElementById('mob-chair').value = val;
-    } else if (field === 'date') {
-      document.getElementById('date-dup').value = val;
-      document.getElementById('mob-date').value = val;
-      document.getElementById('mob-date-bottom').value = val;
-    } else if (field === 'session') {
-      document.getElementById('session-dup').value = val;
-      document.getElementById('mob-session').value = val;
-      document.getElementById('mob-session-bottom').value = val;
-    }
-  }
-
-  function syncFromMobileMeta() {
-    let qp = document.getElementById('mob-qp').value;
-    let course = document.getElementById('mob-course').value;
-    let dt = document.getElementById('mob-date').value;
-    let mth = document.getElementById('mob-month-input').value;
-    let sess = document.getElementById('mob-session').value;
-    let addl = document.getElementById('mob-addl').value;
-    let chief = document.getElementById('mob-chief').value;
-    let chair = document.getElementById('mob-chair').value;
-
-    document.getElementById('qp-orig').value = qp;
-    document.getElementById('qp-dup').value = qp;
-    document.getElementById('course-orig').value = course;
-    document.getElementById('course-dup').value = course;
-    document.getElementById('exam-month-orig').value = mth;
-    document.getElementById('exam-month-dup').value = mth;
-    document.getElementById('date-orig').value = dt;
-    document.getElementById('date-dup').value = dt;
-    document.getElementById('mob-date-bottom').value = dt;
-    document.getElementById('session-orig').value = sess;
-    document.getElementById('session-dup').value = sess;
-    document.getElementById('mob-session-bottom').value = sess;
-    document.getElementById('addl-orig').value = addl;
-    document.getElementById('addl-dup').value = addl;
-    document.getElementById('chief-orig').value = chief;
-    document.getElementById('chief-dup').value = chief;
-    document.getElementById('chair-orig').value = chair;
-    document.getElementById('chair-dup').value = chair;
-    fitAllHeaders();
-  }
-
-  function syncMobileDateBottom(val) {
-    document.getElementById('mob-date').value = val;
-    document.getElementById('date-orig').value = val;
-    document.getElementById('date-dup').value = val;
-  }
-
-  function syncMobileSessionBottom(val) {
-    document.getElementById('mob-session').value = val;
-    document.getElementById('session-orig').value = val;
-    document.getElementById('session-dup').value = val;
-  }
-
-  function switchView(mode) {
-    let a4View = document.getElementById('a4View');
-    let mobView = document.getElementById('mobileView');
-    let btnA4 = document.getElementById('btn-a4');
-    let btnMob = document.getElementById('btn-mob');
-
-    if (mode === 'mobile') {
-      a4View.style.display = 'none';
-      mobView.style.display = 'block';
-      btnMob.classList.add('active');
-      btnA4.classList.remove('active');
-    } else {
-      mobView.style.display = 'none';
-      a4View.style.display = 'flex';
-      btnA4.classList.add('active');
-      btnMob.classList.remove('active');
-      fitAllHeaders();
-    }
+    toggleStrike();
+    calcAll();
+    alert('Draft loaded.');
   }
 
   function clearAll() {
-    if (confirm("Are you sure you want to clear all entered data?")) {
-      document.getElementById('qp-orig').value = '';
-      document.getElementById('qp-dup').value = '';
-      document.getElementById('mob-qp').value = '';
-      document.getElementById('course-orig').value = '';
-      document.getElementById('course-dup').value = '';
-      document.getElementById('mob-course').value = '';
-      document.getElementById('addl-orig').value = '';
-      document.getElementById('addl-dup').value = '';
-      document.getElementById('mob-addl').value = '';
-      document.getElementById('chief-orig').value = '';
-      document.getElementById('chief-dup').value = '';
-      document.getElementById('mob-chief').value = '';
-      document.getElementById('chair-orig').value = '';
-      document.getElementById('chair-dup').value = '';
-      document.getElementById('mob-chair').value = '';
-      initTables();
-      fitAllHeaders();
-    }
-  }
-
-  async function downloadPDF() {
-    let qp = document.getElementById('qp-orig').value.trim() || 'QPCODE';
-    let dt = document.getElementById('date-orig').value.trim().replace(/[\/]/g, '-') || 'DATE';
-    let filename = `${qp}_${dt}.pdf`;
-
-    let wasMobile = document.getElementById('mobileView').style.display === 'block';
-    if (wasMobile) switchView('a4');
-    fitAllHeaders();
-
-    const sheet = document.getElementById('a4View');
-    
-    const clone = sheet.cloneNode(true);
-    clone.style.position = 'fixed';
-    clone.style.top = '-9999px';
-    clone.style.left = '0';
-    clone.style.transform = 'none';
-    clone.style.boxShadow = 'none';
-    document.body.appendChild(clone);
-
-    const origInputs = sheet.querySelectorAll('input, select');
-    const cloneInputs = clone.querySelectorAll('input, select');
-    origInputs.forEach((origEl, idx) => {
-      const cloneEl = cloneInputs[idx];
-      const span = document.createElement('span');
-      const val = origEl.tagName === 'SELECT' ? origEl.options[origEl.selectedIndex].text : origEl.value;
-      span.textContent = val;
-      const cs = window.getComputedStyle(origEl);
-      span.style.display = 'inline-block';
-      span.style.width = cs.width;
-      span.style.fontSize = cs.fontSize;
-      span.style.fontWeight = cs.fontWeight;
-      span.style.textAlign = cs.textAlign;
-      span.style.borderBottom = cs.borderBottom;
-      span.style.padding = cs.padding;
-      span.style.whiteSpace = 'nowrap';
-      span.style.overflow = 'hidden';
-      cloneEl.parentNode.replaceChild(span, cloneEl);
+    if (!confirm('Clear all fields?')) return;
+    document.querySelectorAll('input, textarea').forEach(el => {
+      if (el.type === 'checkbox') {
+        if (el.id === 'strike_11' || el.id === 'strike_13') el.checked = true;
+        else if (el.id === 'col_sf') el.checked = true;
+        else el.checked = false;
+      } else if (el.id === 'rate_per_script') {
+        el.value = 20;
+      } else if (el.id === 'exam_name') {
+        el.value = 'FIFTH SEMESTER FYUG EXAMINATION NOVEMBER 2025';
+      } else if (el.id === 'designation') {
+        el.value = 'ASSISTANT PROFESSOR';
+      } else if (el.id === 'office_address') {
+        el.value = 'MIC ARTS AND SCIENCE COLLEGE, ATHANIKKAL';
+      } else {
+        el.value = '';
+      }
     });
-
-    try {
-      const canvas = await html2canvas(clone, {
-        scale: 3,
-        useCORS: true,
-        logging: false,
-        windowWidth: 1000
-      });
-
-      const imgData = canvas.toDataURL('image/jpeg', 0.98);
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      
-      // Save exact form state in PDF metadata AND as an uncompressed trailing PDF comment so re-uploading NEVER fails!
-      const statePayload = collectMarkSheetState();
-      const encodedState = 'CU_MARKSHEET_DATA:' + btoa(unescape(encodeURIComponent(JSON.stringify(statePayload))));
-      pdf.setProperties({
-        title: `${qp} - University of Calicut Mark Sheet`,
-        subject: encodedState,
-        author: 'Javid Karathodi - Calicut Marksheet App',
-        keywords: encodedState
-      });
-
-      pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-
-      // Append raw ASCII comment to PDF bytes so it is guaranteed intact regardless of jsPDF encoding
-      const pdfBytes = new Uint8Array(pdf.output('arraybuffer'));
-      const commentStr = `\n%${encodedState}\n`;
-      const commentBytes = new TextEncoder().encode(commentStr);
-      const finalBytes = new Uint8Array(pdfBytes.length + commentBytes.length);
-      finalBytes.set(pdfBytes, 0);
-      finalBytes.set(commentBytes, pdfBytes.length);
-
-      const blob = new Blob([finalBytes], { type: 'application/pdf' });
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
-    } catch (err) {
-      console.error(err);
-      window.print();
-    } finally {
-      document.body.removeChild(clone);
-      if (wasMobile) switchView('mobile');
-    }
+    document.getElementById('val_papers_body').innerHTML = '';
+    valRowCount = 0;
+    addValRow();
+    toggleStrike();
+    localStorage.removeItem('calicutRemBill');
   }
 
-
-  // Collect all current form fields into a clean JSON object
-  function collectMarkSheetState() {
-    const rows = [];
-    for (let i = 1; i <= numRows; i++) {
-      const origReg = (document.getElementById(`orig-reg-${i}`)?.value || '').trim();
-      const mobReg = (document.getElementById(`mob-reg-${i}`)?.value || '').trim();
-      const origFig = (document.getElementById(`orig-fig-${i}`)?.value || '').trim();
-      const mobFig = (document.getElementById(`mob-fig-${i}`)?.value || '').trim();
-      rows.push({
-        reg: (origReg || mobReg).toUpperCase(),
-        fig: origFig || mobFig
-      });
-    }
-    return {
-      v: 2,
-      qp: document.getElementById('qp-orig').value || document.getElementById('mob-qp').value || '',
-      sem: document.getElementById('sem-orig').value || document.getElementById('mob-sem-select').value || 'Fifth Semester FYUG',
-      month: document.getElementById('exam-month-orig').value || document.getElementById('mob-month-input').value || 'November',
-      yr: document.getElementById('exam-yr-orig').value || '26',
-      course: document.getElementById('course-orig').value || document.getElementById('mob-course').value || '',
-      addl: document.getElementById('addl-orig').value || document.getElementById('mob-addl').value || '',
-      chief: document.getElementById('chief-orig').value || document.getElementById('mob-chief').value || '',
-      chair: document.getElementById('chair-orig').value || document.getElementById('mob-chair').value || '',
-      date: document.getElementById('date-orig').value || document.getElementById('mob-date').value || '',
-      session: document.getElementById('session-orig').value || document.getElementById('mob-session').value || 'AN',
-      rows: rows
-    };
-  }
-
-  // Restore all fields from parsed data (without speaking every number aloud during import)
-  function applyMarkSheetState(data) {
-    if (!data) return;
-    const prevVoice = voiceEnabled;
-    voiceEnabled = false;
-
-    try {
-      initTables();
-
-      if (data.sem !== undefined) applyExamPreset(data.sem);
-      if (data.yr !== undefined) applyYear(data.yr);
-      if (data.month !== undefined) syncMeta('examMonth', data.month);
-      if (data.qp !== undefined) syncMeta('qp', data.qp);
-      if (data.course !== undefined) syncMeta('course', data.course);
-      if (data.addl !== undefined) syncMeta('addl', data.addl);
-      if (data.chief !== undefined) syncMeta('chief', data.chief);
-      if (data.chair !== undefined) syncMeta('chair', data.chair);
-      if (data.date !== undefined) syncMeta('date', data.date);
-      if (data.session !== undefined) syncMeta('session', data.session);
-
-      if (Array.isArray(data.rows)) {
-        data.rows.forEach((r, idx) => {
-          const rowNum = idx + 1;
-          if (rowNum <= numRows && r) {
-            const regVal = (r.reg || '').toString().trim().toUpperCase();
-            const figVal = (r.fig !== undefined && r.fig !== null) ? r.fig.toString().trim() : '';
-            if (regVal) {
-              syncRow(rowNum, 'reg', regVal);
-            }
-            if (figVal !== '') {
-              syncRow(rowNum, 'fig', figVal);
-            }
-          }
-        });
-      }
-      fitAllHeaders();
-    } finally {
-      voiceEnabled = prevVoice;
-    }
-  }
-
-  function triggerPdfUpload() {
-    const inp = document.getElementById('pdfUploadInput');
-    inp.value = '';
-    inp.click();
-  }
-
-  async function handlePdfUpload(event) {
-    const file = event.target.files && event.target.files[0];
-    if (!file) return;
-
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const uint8 = new Uint8Array(arrayBuffer);
-
-      // Method 1: Read embedded CU_MARKSHEET_DATA payload from trailing PDF comment or metadata
-      const rawLatin = new TextDecoder('latin1').decode(uint8);
-      const marker = 'CU_MARKSHEET_DATA:';
-      const markerIdx = rawLatin.lastIndexOf(marker);
-      if (markerIdx !== -1) {
-        const afterMarker = rawLatin.slice(markerIdx + marker.length);
-        const b64Match = afterMarker.match(/^([A-Za-z0-9+/=]+)/);
-        if (b64Match && b64Match[1]) {
-          try {
-            const jsonStr = decodeURIComponent(escape(atob(b64Match[1])));
-            const parsed = JSON.parse(jsonStr);
-            applyMarkSheetState(parsed);
-            const loadedCount = Array.isArray(parsed.rows) ? parsed.rows.filter(r => r.reg || r.fig).length : 0;
-            alert(`✅ Mark sheet loaded successfully! (${loadedCount} student entries restored). You can now edit any Register Number, Mark, or Examiner detail and download the updated PDF.`);
-            return;
-          } catch (e) {
-            console.warn('Embedded metadata parse failed, trying fallback:', e);
-          }
-        }
-      }
-
-      // Method 2: Fallback using pdf.js for older PDFs
-      if (window.pdfjsLib) {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        const pdfDoc = await pdfjsLib.getDocument({ data: uint8 }).promise;
-        const meta = await pdfDoc.getMetadata().catch(() => null);
-        const subj = (meta && meta.info && (meta.info.Subject || meta.info.Keywords)) || '';
-        if (subj.includes(marker)) {
-          const b64 = subj.split(marker)[1].replace(/\s+/g, '');
-          const jsonStr = decodeURIComponent(escape(atob(b64)));
-          const parsed = JSON.parse(jsonStr);
-          applyMarkSheetState(parsed);
-          const loadedCount = Array.isArray(parsed.rows) ? parsed.rows.filter(r => r.reg || r.fig).length : 0;
-          alert(`✅ Mark sheet loaded! (${loadedCount} student entries restored). You can now edit any details and download the updated PDF.`);
-          return;
-        }
-
-        const page = await pdfDoc.getPage(1);
-        const textContent = await page.getTextContent();
-        const items = textContent.items.map(it => it.str.trim()).filter(Boolean);
-        const fullText = items.join(' ');
-
-        if (fullText.length > 20) {
-          const parsedFallback = parseTextFromPdf(fullText);
-          if (parsedFallback.rows.length > 0) {
-            applyMarkSheetState(parsedFallback);
-            alert(`✅ Mark sheet data extracted! (${parsedFallback.rows.length} student entries restored). Please double-check all fields before downloading.`);
-            return;
-          }
-        }
-      }
-
-      alert('⚠️ This PDF was saved before the Edit feature was added, so it does not contain editable student rows. Please enter the details once and download a new PDF—any PDF downloaded from now on will load all Register Numbers & Marks when uploaded!');
-    } catch (err) {
-      console.error(err);
-      alert('❌ Error reading PDF file. Please try again.');
-    }
-  }
-
-  function parseTextFromPdf(fullText) {
-    const qpMatch = fullText.match(/QP\s*CODE\s*:\s*([A-Z0-9]+)/i);
-    const courseMatch = fullText.match(/Course\s+(.+?)\s+Register\s+Number/i);
-    const dateMatch = fullText.match(/Date\s*:\s*(\d{2}[-\/]\d{2}[-\/]\d{4})/i);
-    const sessMatch = fullText.match(/SESSION\s*:\s*(FN|AN)/i);
-    const semMatch = fullText.match(/((?:First|Third|Fifth|Seventh)\s+Semester\s+FYUG)/i);
-
-    const regRegex = /\b([A-Z]{4,6}\d{2,4})\b\s+(\d{1,3})\b/g;
-    const rows = [];
-    const seen = new Set();
-    let m;
-    while ((m = regRegex.exec(fullText)) !== null) {
-      if (!seen.has(m[1])) {
-        seen.add(m[1]);
-        rows.push({ reg: m[1], fig: m[2] });
-      }
-    }
-    return {
-      qp: qpMatch ? qpMatch[1] : '',
-      course: courseMatch ? courseMatch[1].trim() : '',
-      date: dateMatch ? dateMatch[1] : '',
-      session: sessMatch ? sessMatch[1].toUpperCase() : 'AN',
-      sem: semMatch ? semMatch[1] : 'Fifth Semester FYUG',
-      rows: rows
-    };
-  }
-
-  window.onload = function() {
-    initTables();
-
-    const now = new Date();
-    const currentFullYear = now.getFullYear();
-    const dd = String(now.getDate()).padStart(2, '0');
-    const mm = String(now.getMonth() + 1).padStart(2, '0');
-    const todayStr = `${dd}-${mm}-${currentFullYear}`;
-
-    applyYear(currentFullYear);
-    document.getElementById('date-orig').value = todayStr;
-
-    document.getElementById('qp-dup').value = document.getElementById('qp-orig').value;
-    document.getElementById('sem-dup').value = document.getElementById('sem-orig').value;
-    document.getElementById('exam-month-dup').value = document.getElementById('exam-month-orig').value;
-    document.getElementById('course-dup').value = document.getElementById('course-orig').value;
-    document.getElementById('addl-dup').value = document.getElementById('addl-orig').value;
-    document.getElementById('chief-dup').value = document.getElementById('chief-orig').value;
-    document.getElementById('chair-dup').value = document.getElementById('chair-orig').value;
-    document.getElementById('date-dup').value = document.getElementById('date-orig').value;
-    document.getElementById('session-dup').value = document.getElementById('session-orig').value;
-    document.getElementById('mob-qp').value = document.getElementById('qp-orig').value;
-    document.getElementById('mob-course').value = document.getElementById('course-orig').value;
-    document.getElementById('mob-month-input').value = document.getElementById('exam-month-orig').value;
-    document.getElementById('mob-date').value = document.getElementById('date-orig').value;
-    document.getElementById('mob-date-bottom').value = document.getElementById('date-orig').value;
-    document.getElementById('mob-session').value = document.getElementById('session-orig').value;
-    document.getElementById('mob-session-bottom').value = document.getElementById('session-orig').value;
-    document.getElementById('mob-addl').value = document.getElementById('addl-orig').value;
-    document.getElementById('mob-chief').value = document.getElementById('chief-orig').value;
-    document.getElementById('mob-chair').value = document.getElementById('chair-orig').value;
-    switchView('mobile');
-    window.addEventListener('resize', fitAllHeaders);
-  };
+  // Init with 1 Paper Row by default (can add up to 4)
+  document.addEventListener('DOMContentLoaded', () => {
+    toggleStrike();
+    addValRow();
+  });
 </script>
-
 </body>
 </html>
