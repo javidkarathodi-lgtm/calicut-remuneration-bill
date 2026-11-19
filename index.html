@@ -480,6 +480,24 @@
         page-break-after: always;
       }
       .page:last-of-type { page-break-after: auto; }
+
+      /* Hide all placeholder hints when printing / saving PDF */
+      input::placeholder,
+      textarea::placeholder {
+        color: transparent !important;
+        opacity: 0 !important;
+      }
+      input::-webkit-input-placeholder,
+      textarea::-webkit-input-placeholder {
+        color: transparent !important;
+        opacity: 0 !important;
+      }
+      input::-moz-placeholder,
+      textarea::-moz-placeholder {
+        color: transparent !important;
+        opacity: 0 !important;
+      }
+
       input, textarea {
         background: transparent !important;
       }
